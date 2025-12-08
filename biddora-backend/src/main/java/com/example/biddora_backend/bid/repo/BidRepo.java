@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface BidRepo extends JpaRepository<Bid, Long> {
     Optional<Bid> findTopByPlayerOrderByAmountDesc(Player player);
     Page<Bid> findByPlayerIdOrderByAmountDesc(Long playerId, Pageable pageable);
+    void deleteByPlayerId(Long playerId);
 }

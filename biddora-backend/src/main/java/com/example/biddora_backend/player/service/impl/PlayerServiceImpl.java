@@ -1,5 +1,6 @@
 package com.example.biddora_backend.player.service.impl;
 
+import com.example.biddora_backend.bid.repo.BidRepo;
 import com.example.biddora_backend.common.exception.ProductAccessDeniedException;
 import com.example.biddora_backend.common.util.EntityFetcher;
 import com.example.biddora_backend.player.dto.CreatePlayerDto;
@@ -32,6 +33,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepo playerRepo;
     private final PlayerMapper playerMapper;
     private final EntityFetcher entityFetcher;
+    private final BidRepo bidRepo;
 
     @Override
     @Transactional
@@ -65,8 +67,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Page<PlayerDto> getAllPlayers(Optional<Integer> page, Optional<String> sortBy,
-                                         Optional<String> name, Optional<PlayerStatus> status,
-                                         Optional<PlayerRole> role, Optional<Nationality> nationality) {
+                                        Optional<String> name, Optional<PlayerStatus> status,
+                                        Optional<PlayerRole> role, Optional<Nationality> nationality) {
         PageRequest pageRequest = PageRequest.of(
                 page.orElse(0),
                 12,
@@ -125,6 +127,10 @@ public class PlayerServiceImpl implements PlayerService {
         if (currentUser.getRole() != Role.ADMIN) {
             throw new ProductAccessDeniedException("Only Admins can delete players.");
         }
+        
+        // Delete all bids associated with this player first
+        bidRepo.deleteByPlayerId(playerId);
+        
         playerRepo.deleteById(playerId);
         return "Player deleted successfully";
     }
