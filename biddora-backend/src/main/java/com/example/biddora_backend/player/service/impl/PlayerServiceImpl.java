@@ -4,6 +4,7 @@ import com.example.biddora_backend.common.exception.ProductAccessDeniedException
 import com.example.biddora_backend.common.util.EntityFetcher;
 import com.example.biddora_backend.player.dto.CreatePlayerDto;
 import com.example.biddora_backend.player.dto.PlayerDto;
+import com.example.biddora_backend.player.dto.UpdatePlayerDto;
 import com.example.biddora_backend.player.entity.Player;
 import com.example.biddora_backend.player.enums.Nationality;
 import com.example.biddora_backend.player.enums.PlayerRole;
@@ -79,6 +80,42 @@ public class PlayerServiceImpl implements PlayerService {
         spec = spec.and(PlayerSpecification.hasNationality(nationality.orElse(null)));
 
         return playerRepo.findAll(spec, pageRequest).map(playerMapper::mapToDto);
+    }
+
+    @Override
+    @Transactional
+    public PlayerDto updatePlayer(Long playerId, UpdatePlayerDto dto) {
+        User currentUser = entityFetcher.getCurrentUser();
+        if (currentUser.getRole() != Role.ADMIN) {
+            throw new ProductAccessDeniedException("Only Admins can update players.");
+        }
+
+        Player player = playerRepo.findById(playerId)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        if (dto.getName() != null) {
+            player.setName(dto.getName());
+        }
+        if (dto.getNationality() != null) {
+            player.setNationality(dto.getNationality());
+        }
+        if (dto.getRole() != null) {
+            player.setRole(dto.getRole());
+        }
+        if (dto.getBasePrice() != null) {
+            player.setBasePrice(dto.getBasePrice());
+        }
+        if (dto.getStats() != null) {
+            player.setStats(dto.getStats());
+        }
+        if (dto.getImageUrl() != null) {
+            player.setImageUrl(dto.getImageUrl());
+        }
+        if (dto.getStatus() != null) {
+            player.setStatus(dto.getStatus());
+        }
+
+        return playerMapper.mapToDto(playerRepo.save(player));
     }
 
     @Override

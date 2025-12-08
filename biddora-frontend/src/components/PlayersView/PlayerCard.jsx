@@ -1,9 +1,9 @@
 import React from 'react';
-import { FaGavel, FaTrophy } from 'react-icons/fa';
+import { FaGavel, FaTrophy, FaEdit, FaTrash } from 'react-icons/fa';
 // Use a placeholder if image is missing
 import defaultImg from '../../assets/biciklo.jpeg'; // You might want to rename this asset later
 
-const PlayerCard = ({ player }) => {
+const PlayerCard = ({ player, isAdmin, onEdit, onDelete }) => {
   
   const getStatusBadge = (status) => {
     switch (status) {
@@ -12,6 +12,18 @@ const PlayerCard = ({ player }) => {
       case 'ON_AUCTION': return <span className="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded animate-pulse">LIVE</span>;
       default: return <span className="bg-gray-100 text-gray-800 text-xs font-bold px-2 py-1 rounded">UPCOMING</span>;
     }
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    if (window.confirm(`Are you sure you want to delete ${player.name}?`)) {
+      onDelete(player.id);
+    }
+  };
+
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    onEdit(player);
   };
 
   return (
@@ -25,6 +37,26 @@ const PlayerCard = ({ player }) => {
         <div className="absolute top-2 right-2">
           {getStatusBadge(player.status)}
         </div>
+        
+        {/* Admin Actions */}
+        {isAdmin && (
+          <div className="absolute top-2 left-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={handleEdit}
+              className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors shadow-lg"
+              title="Edit Player"
+            >
+              <FaEdit className="w-3 h-3" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
+              title="Delete Player"
+            >
+              <FaTrash className="w-3 h-3" />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="p-4">

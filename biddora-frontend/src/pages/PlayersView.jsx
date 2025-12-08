@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 import SidebarFilter from '../components/PlayersView/SidebarFilter';
 import PlayerCard from '../components/PlayersView/PlayerCard';
+import EditPlayerModal from '../components/PlayersView/EditPlayerModal';
 
 const PlayersView = () => {
   const [players, setPlayers] = useState([]);
@@ -13,6 +14,44 @@ const PlayersView = () => {
     nationality: [],
     status: []
   });
+  
+  // Admin state
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [editingPlayer, setEditingPlayer] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  // Check if user is admin
+  useEffect(() => {
+    // First try to get role from stored user data
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        if (user.role === 'ADMIN') {
+          setIsAdmin(true);
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to parse user data', e);
+      }
+    }
+    
+    // Fallback: try to decode JWT token
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        // Check various possible role field names
+        const role = payload.role || payload.roles || payload.authorities;
+        const isAdminRole = role === 'ADMIN' || 
+                           role === 'ROLE_ADMIN' || 
+                           (Array.isArray(role) && (role.includes('ADMIN') || role.includes('ROLE_ADMIN')));
+        setIsAdmin(isAdminRole);
+      } catch (e) {
+        setIsAdmin(false);
+      }
+    }
+  }, []);
 
   const fetchPlayers = async () => {
     setLoading(true);
@@ -28,6 +67,40 @@ const PlayersView = () => {
       console.error("Failed to fetch players", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle player edit
+  const handleEditPlayer = (player) => {
+    setEditingPlayer(player);
+    setShowEditModal(true);
+  };
+
+  // Handle player update (after save)
+  const handlePlayerUpdated = (updatedPlayer) => {
+    setPlayers(players.map(p => p.id === updatedPlayer.id ? updatedPlayer : p));
+  };
+
+  // Handle player delete
+  const handleDeletePlayer = async (playerId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8081/api/players/${playerId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete player');
+      }
+
+      // Remove player from local state
+      setPlayers(players.filter(p => p.id !== playerId));
+    } catch (err) {
+      console.error("Failed to delete player", err);
+      alert("Failed to delete player. Please try again.");
     }
   };
 
@@ -106,7 +179,13 @@ const PlayersView = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredPlayers.map(player => (
-                <PlayerCard key={player.id} player={player} />
+                <PlayerCard 
+                  key={player.id} 
+                  player={player} 
+                  isAdmin={isAdmin}
+                  onEdit={handleEditPlayer}
+                  onDelete={handleDeletePlayer}
+                />
               ))}
               {filteredPlayers.length === 0 && (
                 <div className="col-span-full text-center py-12 text-gray-500">
@@ -117,6 +196,17 @@ const PlayersView = () => {
           )}
         </div>
       </div>
+
+      {/* Edit Player Modal */}
+      <EditPlayerModal
+        player={editingPlayer}
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingPlayer(null);
+        }}
+        onSave={handlePlayerUpdated}
+      />
     </div>
   );
 };

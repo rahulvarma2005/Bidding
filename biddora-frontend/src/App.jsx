@@ -69,6 +69,7 @@ function App() {
         <Routes>
           {/* Public Views */}
           <Route path="/" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
+          <Route path="/players" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/user-view" element={<UsersView />} />

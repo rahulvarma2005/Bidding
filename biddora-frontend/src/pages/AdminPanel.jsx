@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserPlus, FaUsersCog, FaGavel } from 'react-icons/fa';
+import { FaUserPlus, FaUsersCog, FaGavel, FaUsers } from 'react-icons/fa';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const AdminPanel = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Auction Admin Control</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: Create Team */}
           <div 
             onClick={() => navigate('/create-team')}
@@ -35,7 +35,19 @@ const AdminPanel = () => {
             <p className="text-gray-600">Add players to the upcoming auction pool.</p>
           </div>
 
-          {/* Card 3: Auctioneer Dashboard */}
+          {/* Card 3: Manage Players */}
+          <div 
+            onClick={() => navigate('/players')}
+            className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all cursor-pointer border-l-4 border-green-500 group"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-semibold text-gray-800">Manage Players</h3>
+              <FaUsers className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
+            </div>
+            <p className="text-gray-600">Edit or delete existing players from the pool.</p>
+          </div>
+
+          {/* Card 4: Auctioneer Dashboard */}
           <div 
             onClick={() => navigate('/auctioneer')}
             className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all cursor-pointer border-l-4 border-red-500 group"

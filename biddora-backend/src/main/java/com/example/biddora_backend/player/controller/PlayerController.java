@@ -2,6 +2,7 @@ package com.example.biddora_backend.player.controller;
 
 import com.example.biddora_backend.player.dto.CreatePlayerDto;
 import com.example.biddora_backend.player.dto.PlayerDto;
+import com.example.biddora_backend.player.dto.UpdatePlayerDto;
 import com.example.biddora_backend.player.enums.Nationality;
 import com.example.biddora_backend.player.enums.PlayerRole;
 import com.example.biddora_backend.player.enums.PlayerStatus;
@@ -46,6 +47,13 @@ public class PlayerController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlayerDto> addPlayer(@Valid @RequestBody CreatePlayerDto createPlayerDto) {
         return ResponseEntity.ok(playerService.addPlayer(createPlayerDto));
+    }
+
+    // Admin Only: Update player
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PlayerDto> updatePlayer(@PathVariable Long id, @RequestBody UpdatePlayerDto updatePlayerDto) {
+        return ResponseEntity.ok(playerService.updatePlayer(id, updatePlayerDto));
     }
 
     // Admin Only: Delete player
