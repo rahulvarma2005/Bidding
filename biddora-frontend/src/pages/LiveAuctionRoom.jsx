@@ -108,11 +108,39 @@ try {
     if (data.content && data.content.length > 0) {
     const player = data.content[0];
     setCurrentPlayer(player);
-    if (currentBid === 0) setCurrentBid(player.basePrice); 
+    
+    // Fetch current bids for this player to get the latest state
+    await fetchBidsForPlayer(player.id, player.basePrice);
     }
 } catch (err) {
     console.error(err);
 }
+};
+
+// NEW: Fetch existing bids when joining the auction
+const fetchBidsForPlayer = async (playerId, basePrice) => {
+  try {
+    const res = await fetch(`http://localhost:8081/api/bid/player/${playerId}?page=0`);
+    if (res.ok) {
+      const data = await res.json();
+      const bids = data.content || [];
+      
+      if (bids.length > 0) {
+        // Bids come sorted by amount DESC (highest first)
+        // Set current bid to the highest bid (first item)
+        setCurrentBid(bids[0].amount);
+        // Reverse to show in chronological order (oldest/lowest first) for bid history
+        setBidHistory(bids.reverse());
+      } else {
+        // No bids yet, use base price
+        setCurrentBid(basePrice);
+        setBidHistory([]);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to fetch bids:", err);
+    setCurrentBid(basePrice);
+  }
 };
 
 const fetchMyTeam = async () => {
