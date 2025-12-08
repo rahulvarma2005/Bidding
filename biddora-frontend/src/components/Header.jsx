@@ -78,7 +78,7 @@ const Header = ({ userId, username, role, onLogout }) => {
             onClick={handleHomeClick}
             className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent hover:from-purple-700 hover:to-blue-700 transition-all duration-300"
           >
-            Biddora
+            IPL AUCTION 2026
           </button>
         </div>
 
@@ -113,20 +113,20 @@ const Header = ({ userId, username, role, onLogout }) => {
               </button>
             )}
 
-            <button
+            {/*<button
               onClick={handleAboutClick}
               className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 group"
             >
               <FaInfoCircle className="text-sm group-hover:scale-110 transition-transform" />
               <span className="text-sm font-medium">About Us</span>
-            </button>
+            </button>*/}
           </nav>
         </div>
 
         {/* User Actions */}
         {username ? (
           <div className="flex items-center justify-end space-x-4">
-            {/* Favorites */}
+           {/* {/* Favorites 
             <div className="relative">
               <button
                 onClick={() => setShowFavorites(!showFavorites)}
@@ -142,7 +142,7 @@ const Header = ({ userId, username, role, onLogout }) => {
                 )}
               </button>
 
-              {/* Favorites Popup */}
+              {/* Favorites Popup 
               {showFavorites && (
                 <div className="absolute right-0 mt-2 z-50">
                   <FavoriteItem
@@ -152,7 +152,7 @@ const Header = ({ userId, username, role, onLogout }) => {
                   />
                 </div>
               )}
-            </div>
+            </div>*/}
 
             {/* User Profile */}
             <div className="flex items-center space-x-3">
@@ -251,11 +251,11 @@ const Header = ({ userId, username, role, onLogout }) => {
 
         {username ? (
           <button
-            onClick={() => setShowFavorites(!showFavorites)}
+            onClick={() => navigate("/my-profile")}
             className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
           >
-            <FaHeart className="w-5 h-5" />
-            <span className="text-xs mt-1">Favorites</span>
+            <FaUser className="w-5 h-5" />
+            <span className="text-xs mt-1">Profile</span>
           </button>
         ) : (
           <button
