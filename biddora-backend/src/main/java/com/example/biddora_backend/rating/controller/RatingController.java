@@ -19,33 +19,34 @@ public class RatingController {
     private final RatingService ratingService;
 
     @PostMapping
-    ResponseEntity<RatingDto> createRating(@RequestBody CreateRatingDto createRatingDto) {
+    public ResponseEntity<RatingDto> createRating(@RequestBody CreateRatingDto createRatingDto) {
         return ResponseEntity.ok(ratingService.createRating(createRatingDto));
     }
 
     @GetMapping("/{ratingId}")
-    ResponseEntity<RatingDto> getById(@PathVariable Long ratingId){
+    public ResponseEntity<RatingDto> getById(@PathVariable Long ratingId){
         return ResponseEntity.ok(ratingService.getById(ratingId));
     }
 
     @GetMapping("/user/{userId}")
-    ResponseEntity<List<RatingDto>> getRatingsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<RatingDto>> getRatingsByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(ratingService.getRatingsByUserId(userId));
     }
 
-    @GetMapping("/product/{productId}")
-    ResponseEntity<List<RatingDto>> getProductRatings(@PathVariable("productId") Long prodcutId){
-        return ResponseEntity.ok(ratingService.getProductRatings(prodcutId));
+    // Updated: Changed from /product/{productId} to /player/{playerId}
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<List<RatingDto>> getPlayerRatings(@PathVariable("playerId") Long playerId){
+        return ResponseEntity.ok(ratingService.getPlayerRatings(playerId));
     }
 
     @PutMapping("/{ratingId}")
-    ResponseEntity<RatingDto> updateRating(@PathVariable Long ratingId,
-                                           @RequestBody UpdateRatingDto updateRatingDto) {
-        return ResponseEntity.ok(ratingService.updateRating(ratingId,updateRatingDto));
+    public ResponseEntity<RatingDto> updateRating(@PathVariable Long ratingId,
+                                                  @RequestBody UpdateRatingDto updateRatingDto) {
+        return ResponseEntity.ok(ratingService.updateRating(ratingId, updateRatingDto));
     }
 
     @DeleteMapping("/{ratingId}")
-    ResponseEntity<Void> deleteRating(@PathVariable Long ratingId) {
+    public ResponseEntity<Void> deleteRating(@PathVariable Long ratingId) {
         ratingService.deleteRating(ratingId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

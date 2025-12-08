@@ -17,28 +17,23 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @GetMapping
-    ResponseEntity<List<FavoriteDto>> getAllFavorites(){
-        List<FavoriteDto> favoriteDtos = favoriteService.getFavorites();
-
-        return ResponseEntity.ok(favoriteDtos);
+    public ResponseEntity<List<FavoriteDto>> getAllFavorites(){
+        return ResponseEntity.ok(favoriteService.getFavorites());
     }
 
     @GetMapping("/count/{userId}")
-    ResponseEntity<Long> countUserFavorites(@PathVariable("userId") Long userId) {
+    public ResponseEntity<Long> countUserFavorites(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(favoriteService.countUserFavorites(userId));
     }
 
     @PostMapping
-    ResponseEntity<FavoriteDto> addToFavorite(@RequestBody CreateFavoriteDto createFavoriteDto) {
-        FavoriteDto favoriteDto = favoriteService.addToFavorite(createFavoriteDto);
-
-        return ResponseEntity.ok(favoriteDto);
+    public ResponseEntity<FavoriteDto> addToFavorite(@RequestBody CreateFavoriteDto createFavoriteDto) {
+        return ResponseEntity.ok(favoriteService.addToFavorite(createFavoriteDto));
     }
 
-    @DeleteMapping("/{productId}")
-    ResponseEntity<String> removeFavorite(@PathVariable("productId") Long productId) {
-        favoriteService.removeFavorite(productId);
-
-        return ResponseEntity.ok("Item removed.");
+    @DeleteMapping("/{playerId}")
+    public ResponseEntity<String> removeFavorite(@PathVariable("playerId") Long playerId) {
+        favoriteService.removeFavorite(playerId);
+        return ResponseEntity.ok("Player removed from favorites.");
     }
 }

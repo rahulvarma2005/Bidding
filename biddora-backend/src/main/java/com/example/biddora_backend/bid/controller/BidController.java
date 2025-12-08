@@ -19,15 +19,15 @@ public class BidController {
     private final BidService bidService;
 
     @PostMapping
-    ResponseEntity<BidDto> placeBid(@Valid @RequestBody CreateBidDto createBidDto) {
-        BidDto bidDto = bidService.placeBid(createBidDto);
-        return ResponseEntity.ok(bidDto);
+    public ResponseEntity<BidDto> placeBid(@Valid @RequestBody CreateBidDto createBidDto) {
+        return ResponseEntity.ok(bidService.placeBid(createBidDto));
     }
 
-    @GetMapping("/product/{productId}")
-    ResponseEntity<Page<BidDto>> getBidsForProduct(@PathVariable Long productId,
-                                                   @RequestParam Optional<Integer> page){
-
-        return ResponseEntity.ok(bidService.getBidsByProductId(productId,page));
+    // Updated path from /product/{productId} to /player/{playerId}
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<Page<BidDto>> getBidsForPlayer(@PathVariable Long playerId,
+                                                         @RequestParam Optional<Integer> page) {
+        // Note: Ensure BidService method is updated to accept playerId
+        return ResponseEntity.ok(bidService.getBidsByProductId(playerId, page));
     }
 }

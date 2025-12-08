@@ -3,7 +3,7 @@ package com.example.biddora_backend.rating.service.impl;
 import com.example.biddora_backend.rating.dto.CreateRatingDto;
 import com.example.biddora_backend.rating.dto.RatingDto;
 import com.example.biddora_backend.rating.dto.UpdateRatingDto;
-import com.example.biddora_backend.product.entity.Product;
+import com.example.biddora_backend.player.entity.Player;
 import com.example.biddora_backend.rating.entity.Rating;
 import com.example.biddora_backend.user.entity.User;
 import com.example.biddora_backend.common.exception.RatingAccessDeniedException;
@@ -30,11 +30,12 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public RatingDto createRating(CreateRatingDto createRatingDto) {
         User user = entityFetcher.getCurrentUser();
-        Product product = entityFetcher.getProductById(createRatingDto.getProductId());
+        // Fetch Player using the updated EntityFetcher
+        Player player = entityFetcher.getPlayerById(createRatingDto.getPlayerId());
 
         Rating rating = new Rating();
         rating.setUser(user);
-        rating.setProduct(product);
+        rating.setPlayer(player); // Set Player instead of Product
         rating.setRatingDate(LocalDateTime.now());
         rating.setComment(createRatingDto.getComment());
         rating.setRatingStars(createRatingDto.getRatingStars());
@@ -82,15 +83,12 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public List<RatingDto> getRatingsByUserId(Long userId) {
         List<Rating> ratings = ratingRepo.findByUserId(userId);
-
-        return ratings.stream().map(ratingMapper::mapToDto).toList();
-    }
-
-    @Override
-    public List<RatingDto> getProductRatings(Long productId) {
-        List<Rating> ratings = ratingRepo.findByProductId(productId);
-
         return ratings.stream().map(ratingMapper::mapToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<RatingDto> getPlayerRatings(Long playerId) { // Renamed from getProductRatings
+        List<Rating> ratings = ratingRepo.findByPlayerId(playerId);
+        return ratings.stream().map(ratingMapper::mapToDto).collect(Collectors.toList());
+    }
 }

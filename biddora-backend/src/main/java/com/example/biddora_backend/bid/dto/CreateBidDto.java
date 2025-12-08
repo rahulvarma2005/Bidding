@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateBidDto {
 
-    @NotNull(message = "Invalid type for product id.")
-    private Long productId;
+    @NotNull(message = "Invalid type for player id.")
+    private Long playerId; // Renamed from productId
 
     @NotNull(message = "Set amount.")
     private Long amount;

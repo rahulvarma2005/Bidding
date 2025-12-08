@@ -1,6 +1,6 @@
 package com.example.biddora_backend.rating.dto;
 
-import com.example.biddora_backend.product.dto.ProductDto;
+import com.example.biddora_backend.player.dto.PlayerDto;
 import com.example.biddora_backend.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class RatingDto {
 
     private Long id;
     private UserDto user;
-    private ProductDto product;
+    private PlayerDto player; // Changed from ProductDto to PlayerDto
     private String comment;
     private Integer ratingStars;
     private LocalDateTime ratingDate;

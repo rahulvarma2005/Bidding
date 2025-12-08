@@ -1,6 +1,6 @@
 package com.example.biddora_backend.favorite.entity;
 
-import com.example.biddora_backend.product.entity.Product;
+import com.example.biddora_backend.player.entity.Player;
 import com.example.biddora_backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,6 @@ import lombok.Setter;
 @Setter
 @Table(name = "favorites")
 public class Favorite {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +24,6 @@ public class Favorite {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "player_id")
+    private Player player;
 }

@@ -12,5 +12,5 @@ public interface RatingService {
     RatingDto updateRating(Long ratingId, UpdateRatingDto updateRatingDto);
     RatingDto getById(Long id);
     List<RatingDto> getRatingsByUserId(Long userId);
-    List<RatingDto> getProductRatings(Long productId);
+    List<RatingDto> getPlayerRatings(Long playerId); // Renamed method
 }

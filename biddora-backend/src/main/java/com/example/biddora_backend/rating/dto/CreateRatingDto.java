@@ -11,11 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRatingDto {
-
-    private Long productId;
-
+    private Long playerId;
     private String comment;
-
-    @NotNull(message = "Rating is required!")
+    @NotNull
     private Integer ratingStars;
 }

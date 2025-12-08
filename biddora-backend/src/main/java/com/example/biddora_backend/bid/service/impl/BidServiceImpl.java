@@ -5,8 +5,10 @@ import com.example.biddora_backend.bid.dto.CreateBidDto;
 import com.example.biddora_backend.bid.entity.Bid;
 import com.example.biddora_backend.common.exception.BidAccessDeniedException;
 import com.example.biddora_backend.common.exception.BidException;
-import com.example.biddora_backend.product.entity.Product;
-import com.example.biddora_backend.product.enums.ProductStatus;
+import com.example.biddora_backend.player.entity.Player;
+import com.example.biddora_backend.player.enums.Nationality;
+import com.example.biddora_backend.player.enums.PlayerStatus;
+import com.example.biddora_backend.team.entity.Team;
 import com.example.biddora_backend.user.entity.User;
 import com.example.biddora_backend.common.handlers.SocketConnectionHandler;
 import com.example.biddora_backend.bid.mapper.BidMapper;
@@ -32,43 +34,74 @@ public class BidServiceImpl implements BidService {
     private final EntityFetcher entityFetcher;
     private final SocketConnectionHandler socketConnectionHandler;
 
+    // Constants for Squad Limits
+    private static final int MAX_SQUAD_SIZE = 25;
+    private static final int MAX_OVERSEAS_PLAYERS = 8;
+
     @Override
     @Transactional
     public BidDto placeBid(CreateBidDto createBidDto) {
 
-        Product product = entityFetcher.getProductById(createBidDto.getProductId());
+        Player player = entityFetcher.getPlayerById(createBidDto.getPlayerId());
         User user = entityFetcher.getCurrentUser();
+        Team team = entityFetcher.getTeamByOwner(user); // Bidder MUST have a team
 
-        Long highest = bidRepo.findTopByProductOrderByAmountDesc(product).map(Bid::getAmount).orElse(product.getStartingPrice());
-
-        if (product.getProductStatus() != ProductStatus.OPEN) {
-            throw new BidException("Bidding is not allowed. Auction is not open.");
+        // 1. Check if Player is actually on the auction table
+        if (player.getStatus() != PlayerStatus.ON_AUCTION) {
+            throw new BidException("This player is not currently on the auction table.");
         }
 
-        if (product.getUser().equals(user)) {
-            throw new BidAccessDeniedException("You cannot bid on your own product.");
+        // 2. Validate Bid Amount vs Current Highest
+        Optional<Bid> highestBidOpt = bidRepo.findTopByPlayerOrderByAmountDesc(player);
+        Long currentHighest = highestBidOpt.map(Bid::getAmount).orElse(player.getBasePrice());
+
+        if (highestBidOpt.isEmpty()) {
+            // Case 1: No bids yet. The first bid must be at least the base price.
+            if (createBidDto.getAmount() < player.getBasePrice()) {
+                throw new BidException("Bid cannot be lower than the base price: " + player.getBasePrice());
+            }
+        } else {
+            // Case 2: Bids exist. The new bid must be strictly higher than the current highest.
+            if (createBidDto.getAmount() <= currentHighest) {
+                throw new BidException("Bid must be higher than the current highest bid: " + currentHighest);
+            }
         }
 
-        if (LocalDateTime.now().isAfter(product.getEndTime())) {
-            throw new BidException("Auction ended at:" + product.getEndTime());
+        // 3. RULE: Check Team Wallet (Purse)
+        if (team.getRemainingPurse() < createBidDto.getAmount()) {
+            throw new BidAccessDeniedException("Insufficient funds! Your remaining purse is: " + team.getRemainingPurse());
         }
 
-        if (createBidDto.getAmount() <= highest) {
-            throw new BidException("Bid must be higher than current highest bid: " + highest);
+        // 4. RULE: Check Squad Size Limit
+        // We include the current player in the count temporarily to see if it breaches limit
+        if (team.getSquad().size() >= MAX_SQUAD_SIZE) {
+            throw new BidAccessDeniedException("Squad full! You cannot buy more than " + MAX_SQUAD_SIZE + " players.");
         }
 
+        // 5. RULE: Check Overseas Limit
+        if (player.getNationality() == Nationality.OVERSEAS) {
+            long currentOverseasCount = team.getSquad().stream()
+                    .filter(p -> p.getNationality() == Nationality.OVERSEAS)
+                    .count();
+
+            if (currentOverseasCount >= MAX_OVERSEAS_PLAYERS) {
+                throw new BidAccessDeniedException("Foreign quota full! You cannot have more than " + MAX_OVERSEAS_PLAYERS + " overseas players.");
+            }
+        }
+
+        // Place the Bid
         Bid bid = new Bid();
         bid.setAmount(createBidDto.getAmount());
         bid.setUser(user);
-        bid.setProduct(product);
+        bid.setPlayer(player);
         bid.setTimestamp(LocalDateTime.now());
 
         Bid savedBid = bidRepo.save(bid);
         BidDto mappedBid = bidMapper.mapToDto(savedBid);
 
+        // Broadcast to all clients
         try {
             socketConnectionHandler.sendBidToProduct(mappedBid);
-            System.out.println("Sending bid via WS: " + mappedBid);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,15 +110,11 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public Page<BidDto> getBidsByProductId(Long productId, Optional<Integer> page){
-        Product product = entityFetcher.getProductById(productId);
+    public Page<BidDto> getBidsByProductId(Long playerId, Optional<Integer> page){
+        // Note: keeping method name same for interface compatibility, but logic is for Player
 
-        PageRequest pageRequest = PageRequest.of(
-                page.orElse(0),
-                12
-        );
-
-        Page<Bid> bids = bidRepo.findByProductIdOrderByAmountDesc(product.getId(), pageRequest);
+        PageRequest pageRequest = PageRequest.of(page.orElse(0), 12);
+        Page<Bid> bids = bidRepo.findByPlayerIdOrderByAmountDesc(playerId, pageRequest);
 
         return bids.map(bidMapper::mapToDto);
     }

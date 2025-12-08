@@ -28,42 +28,32 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public List<FavoriteDto> getFavorites() {
         User user = entityFetcher.getCurrentUser();
-
-        List<Favorite> favorites = favoriteRepo.findByUserId(user.getId());
-
-        return favorites
+        return favoriteRepo.findByUserId(user.getId())
                 .stream()
                 .map(favoriteMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public FavoriteDto addToFavorite(CreateFavoriteDto createFavoriteDto) {
-
+    public FavoriteDto addToFavorite(CreateFavoriteDto dto) {
         User user = entityFetcher.getCurrentUser();
 
-        Optional<Favorite> favorite = favoriteRepo.findByUserIdAndProductId(user.getId(), createFavoriteDto.getProductId());
-
-        if (!favorite.isEmpty()) {
-            throw new ResourceAlreadyExistsException("This product is already in your favorites.");
+        if (favoriteRepo.findByUserIdAndPlayerId(user.getId(), dto.getPlayerId()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Player already in favorites.");
         }
 
-        Favorite newFavorite = new Favorite();
-        newFavorite.setUser(user);
-        newFavorite.setProduct(entityFetcher.getProductById(createFavoriteDto.getProductId()));
+        Favorite favorite = new Favorite();
+        favorite.setUser(user);
+        favorite.setPlayer(entityFetcher.getPlayerById(dto.getPlayerId()));
 
-        FavoriteDto savedFavorite = favoriteMapper.mapToDto(favoriteRepo.save(newFavorite));
-
-        return savedFavorite;
+        return favoriteMapper.mapToDto(favoriteRepo.save(favorite));
     }
 
     @Override
-    public void removeFavorite(Long productId) {
+    public void removeFavorite(Long playerId) {
         User user = entityFetcher.getCurrentUser();
-
-        Favorite favorite = favoriteRepo.findByUserIdAndProductId(user.getId(), productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Favorite for product with ID:" + productId + " not found!"));
-
+        Favorite favorite = favoriteRepo.findByUserIdAndPlayerId(user.getId(), playerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Favorite not found!"));
         favoriteRepo.delete(favorite);
     }
 

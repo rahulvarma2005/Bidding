@@ -9,16 +9,14 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
 public class SocketConnectionHandler extends TextWebSocketHandler {
 
-    private final Map<Long, List<WebSocketSession>> sessionsByProduct = new ConcurrentHashMap<>();
+    // Maintain a list of all active sessions (Auction Room concept)
+    private final List<WebSocketSession> allSessions = new CopyOnWriteArrayList<>();
     private final ObjectMapper objectMapper;
 
     public SocketConnectionHandler(ObjectMapper objectMapper) {
@@ -27,40 +25,48 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println(session.getId() + " Connected");
+        allSessions.add(session);
+        System.out.println("Session Connected: " + session.getId());
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        Long productId = objectMapper.readTree(message.getPayload()).get("productId").asLong();
-
-        // Register session for productId
-        List<WebSocketSession> sessions = sessionsByProduct
-                .computeIfAbsent(productId, k -> Collections.synchronizedList(new ArrayList<>()));
-
-        if (!sessions.contains(session)) {
-            sessions.add(session);
-        }
-
-        System.out.println("Session " + session.getId() + " subscribed to product " + productId);
+        // Optional: Handle incoming messages from clients (e.g., "Ping" or chat)
+        System.out.println("Received: " + message.getPayload());
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        for (List<WebSocketSession> sessions : sessionsByProduct.values()) {
-            sessions.remove(session);
-        }
-        System.out.println(session.getId() + " Disconnected");
+        allSessions.remove(session);
+        System.out.println("Session Disconnected: " + session.getId());
     }
 
-    public void sendBidToProduct(BidDto bidDto) throws IOException {
-        List<WebSocketSession> sessions = sessionsByProduct.getOrDefault(bidDto.getProductId(), List.of());
-        String json = objectMapper.writeValueAsString(bidDto);
+    /**
+     * Sends a Bid update to all connected clients.
+     * Used by BidServiceImpl.
+     */
+    public void sendBidToProduct(BidDto mappedBid) throws IOException {
+        // We reuse the generic broadcast method to ensure consistent message format
+        broadcastMessage("BID_UPDATE", mappedBid);
+    }
 
-        for (WebSocketSession session : sessions) {
+    /**
+     * Generic method to broadcast any event (Bids, Sold, Unsold, New Player).
+     * Used by AuctioneerServiceImpl and internally by sendBidToProduct.
+     */
+    public void broadcastMessage(String type, Object payload) throws IOException {
+        WebSocketMessage message = new WebSocketMessage(type, payload);
+        String json = objectMapper.writeValueAsString(message);
+
+        for (WebSocketSession session : allSessions) {
             if (session.isOpen()) {
-                session.sendMessage(new TextMessage(json));
+                synchronized (session) { // Prevent concurrent writes to the same session
+                    session.sendMessage(new TextMessage(json));
+                }
             }
         }
     }
+
+    // Inner record to standardize the JSON structure sent to frontend
+    private record WebSocketMessage(String type, Object payload) {}
 }

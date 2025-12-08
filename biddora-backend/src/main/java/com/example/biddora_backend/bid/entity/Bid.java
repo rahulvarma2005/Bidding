@@ -1,6 +1,6 @@
 package com.example.biddora_backend.bid.entity;
 
-import com.example.biddora_backend.product.entity.Product;
+import com.example.biddora_backend.player.entity.Player;
 import com.example.biddora_backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,6 @@ public class Bid {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
+    @JoinColumn(name = "player_id")
+    private Player player;
 }

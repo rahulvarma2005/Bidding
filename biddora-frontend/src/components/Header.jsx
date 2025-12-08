@@ -4,10 +4,11 @@ import {
   FaHeart,
   FaChevronDown,
   FaSignOutAlt,
-  FaBox,
   FaUsers,
   FaInfoCircle,
   FaUser,
+  FaGavel, // Import Gavel for Auction
+  FaRunning // Import Running icon for Players
 } from "react-icons/fa";
 import { RiAdminFill } from "react-icons/ri";
 import FavoriteItem from "./FavoriteItem";
@@ -21,8 +22,8 @@ const Header = ({ userId, username, role, onLogout }) => {
   const navigate = useNavigate();
 
   const handleLoginClick = () => navigate("/login");
-  const handleRegisterClick = () => navigate("/register");
-  const handleProductsClick = () => navigate("/");
+  const handlePlayersClick = () => navigate("/"); // Renamed handler
+  const handleLiveAuctionClick = () => navigate("/live-auction"); // New handler
   const handleUsersClick = () => navigate("/user-view");
   const handleAboutClick = () => navigate("/about-us");
   const handleHomeClick = () => navigate("/");
@@ -52,7 +53,7 @@ const Header = ({ userId, username, role, onLogout }) => {
       setFavoritesCount(count);
     } catch (err) {
       setError(err.message);
-      console.error("Greška pri dobijanju broja omiljenih:", err);
+      console.error("Error fetching favorites count:", err);
     } finally {
       setLoading(false);
     }
@@ -64,14 +65,13 @@ const Header = ({ userId, username, role, onLogout }) => {
     }
   }, [userId]);
 
-  // Ova funkcija će se proslijediti FavoriteItem komponenti
   const refreshFavoritesCount = () => {
     fetchFavoritesCount();
   };
 
   return (
     <>
-      <div className="w-full py-4 px-6 lg:px-20 bg-white flex items-center justify-between shadow-lg border-b border-gray-200">
+      <div className="w-full py-4 px-6 lg:px-20 bg-white flex items-center justify-between shadow-lg border-b border-gray-200 sticky top-0 z-50">
         {/* Logo/Home */}
         <div className="flex items-center justify-start">
           <button
@@ -85,21 +85,33 @@ const Header = ({ userId, username, role, onLogout }) => {
         {/* Navigation and Search */}
         <div className="hidden md:flex items-center justify-center flex-1 max-w-2xl mx-8">
           <nav className="flex items-center space-x-8 mr-8">
+            {/* Live Auction Link (New) */}
             <button
-              onClick={handleProductsClick}
-              className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 group"
+              onClick={handleLiveAuctionClick}
+              className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors duration-200 group font-bold animate-pulse"
             >
-              <FaBox className="text-sm group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">Products</span>
+              <FaGavel className="text-lg group-hover:rotate-12 transition-transform" />
+              <span className="text-sm">LIVE AUCTION</span>
             </button>
 
+            {/* Players Link (Renamed from Products) */}
             <button
-              onClick={handleUsersClick}
+              onClick={handlePlayersClick}
               className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 group"
             >
-              <FaUsers className="text-sm group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">Users</span>
+              <FaRunning className="text-sm group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">Players</span>
             </button>
+
+            {role === "ADMIN" && (
+              <button
+                onClick={handleUsersClick}
+                className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 group"
+              >
+                <FaUsers className="text-sm group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Users</span>
+              </button>
+            )}
 
             <button
               onClick={handleAboutClick}
@@ -136,7 +148,7 @@ const Header = ({ userId, username, role, onLogout }) => {
                   <FavoriteItem
                     user={username}
                     setShowFavorites={setShowFavorites}
-                    onFavoriteUpdate={refreshFavoritesCount} // Dodaj ovu liniju
+                    onFavoriteUpdate={refreshFavoritesCount}
                   />
                 </div>
               )}
@@ -200,7 +212,7 @@ const Header = ({ userId, username, role, onLogout }) => {
                       className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors duration-200"
                     >
                       <FaSignOutAlt className="w-4 h-4" />
-                      <span>Odjava</span>
+                      <span>Logout</span>
                     </button>
                   </div>
                 )}
@@ -210,14 +222,7 @@ const Header = ({ userId, username, role, onLogout }) => {
         ) : (
           <div className="flex items-center justify-end space-x-4">
             <button
-              onClick={handleRegisterClick}
-              className="text-sm text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200 hidden sm:block"
-            >
-              Create Account
-            </button>
-
-            <button
-              onClick={() => handleLoginClick()}
+              onClick={handleLoginClick}
               className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
             >
               Login
@@ -232,16 +237,16 @@ const Header = ({ userId, username, role, onLogout }) => {
           onClick={handleHomeClick}
           className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
         >
-          <FaBox className="w-5 h-5" />
-          <span className="text-xs mt-1">Home</span>
+          <FaRunning className="w-5 h-5" />
+          <span className="text-xs mt-1">Players</span>
         </button>
 
         <button
-          onClick={handleProductsClick}
-          className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
+          onClick={handleLiveAuctionClick}
+          className="flex flex-col items-center text-red-600 hover:text-red-700 transition-colors animate-pulse"
         >
-          <FaBox className="w-5 h-5" />
-          <span className="text-xs mt-1">Products</span>
+          <FaGavel className="w-6 h-6" />
+          <span className="text-xs mt-1 font-bold">AUCTION</span>
         </button>
 
         {username ? (

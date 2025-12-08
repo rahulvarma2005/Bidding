@@ -6,14 +6,19 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
-import ProductsView from "./pages/ProductsView";
+import PlayersView from "./pages/PlayersView"; // Note: This will be broken until refactored!
 import UsersView from "./pages/UsersView";
 import UserDetails from "./pages/UserDetails";
 import ProductDetails from "./pages/ProductDetails";
 import AboutUs from "./pages/AboutUs";
 import MyProfile from "./pages/MyProfile";
-import CreateProduct from "./pages/CreateProduct";
 import AdminPanel from "./pages/AdminPanel";
+import LiveAuctionRoom from "./pages/LiveAuctionRoom";
+
+// --- NEW IMPORTS ---
+import CreateTeam from "./pages/CreateTeam";
+import AddPlayer from "./pages/AddPlayer";
+import AuctioneerDashboard from "./pages/AuctioneerDashboard";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -51,15 +56,9 @@ function App() {
   const Layout = ({ children }) => {
     return (
       <div className="flex flex-col min-h-screen">
-        {/* Header on top */}
         <Header userId={user?.id} username={user?.username} role={user?.role} onLogout={handleLogout} />
-
-
-        {/* Main content */}
         <main className="flex-grow">{children}</main>
-
-        {/* Footer at bottom */}
-        <Footer />
+        {/*<Footer />*/}
       </div>
     );
   };
@@ -68,43 +67,43 @@ function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<ProductsView isAuthenticated={isAuthenticated}/>} />
+          {/* Public Views */}
+          <Route path="/" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/user-view" element={<UsersView />} />
-          <Route path="/my-profile" element={<MyProfile />} />
-          <Route path="/admin-panel" element={user?.role === "ADMIN" ? (<AdminPanel />):(<LoginForm />)} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/live-auction" element={<LiveAuctionRoom />} />
+
+          {/* Protected Routes */}
+          <Route path="/my-profile" element={isAuthenticated ? <MyProfile /> : <LoginForm onLogin={handleLogin} />} />
           <Route
             path="/user-profile/:userId"
-            element={
-              isAuthenticated ? (
-                <UserDetails />
-              ) : (
-                <LoginForm onLogin={handleLogin} />
-              )
-            }
+            element={isAuthenticated ? <UserDetails /> : <LoginForm onLogin={handleLogin} />}
           />
-          <Route
-            path="/add-product"
-            element={
-              isAuthenticated ? (
-                <CreateProduct />
-              ) : (
-                <LoginForm onLogin={handleLogin} />
-              )
-            }
-          />*
           <Route
             path="/product-details/:productId"
-            element={
-              isAuthenticated ? (
-                <ProductDetails />
-              ) : (
-                <LoginForm onLogin={handleLogin} />
-              )
-            }
+            element={isAuthenticated ? <ProductDetails /> : <LoginForm onLogin={handleLogin} />}
           />
-          <Route path="/about-us" element={<AboutUs />} />
+
+          {/* ADMIN ROUTES */}
+          <Route 
+            path="/admin-panel" 
+            element={user?.role === "ADMIN" ? <AdminPanel /> : <LoginForm onLogin={handleLogin} />} 
+          />
+          <Route 
+            path="/create-team" 
+            element={user?.role === "ADMIN" ? <CreateTeam /> : <LoginForm onLogin={handleLogin} />} 
+          />
+          <Route 
+            path="/add-player" 
+            element={user?.role === "ADMIN" ? <AddPlayer /> : <LoginForm onLogin={handleLogin} />} 
+          />
+          <Route 
+            path="/auctioneer" 
+            element={user?.role === "ADMIN" ? <AuctioneerDashboard /> : <LoginForm onLogin={handleLogin} />} 
+          />
+
         </Routes>
       </Layout>
     </BrowserRouter>

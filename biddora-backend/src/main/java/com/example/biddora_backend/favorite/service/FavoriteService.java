@@ -8,6 +8,6 @@ import java.util.List;
 public interface FavoriteService {
     List<FavoriteDto> getFavorites();
     FavoriteDto addToFavorite(CreateFavoriteDto createFavoriteDto);
-    void removeFavorite(Long productId);
+    void removeFavorite(Long playerId);
     Long countUserFavorites(Long userId);
 }

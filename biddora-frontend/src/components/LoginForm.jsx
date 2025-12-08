@@ -155,7 +155,7 @@ const LoginForm = ({ onLogin, onClose }) => {
           )}
 
           {/* Options */}
-          <div className="flex items-center justify-between">
+          {/*<div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
                 id="remember"
@@ -178,7 +178,7 @@ const LoginForm = ({ onLogin, onClose }) => {
               <FaQuestionCircle className="w-3 h-3" />
               <span>Forgot password?</span>
             </button>
-          </div>
+          </div>*/}
 
           {/* Submit Button */}
           <button
@@ -200,7 +200,7 @@ const LoginForm = ({ onLogin, onClose }) => {
           </button>
 
           {/* Footer */}
-          <div className="text-center pt-4 border-t border-gray-200">
+          {/*<div className="text-center pt-4 border-t border-gray-200">
             <p className="text-gray-600 text-sm">
               Don't have an account?{" "}
               <button
@@ -211,7 +211,7 @@ const LoginForm = ({ onLogin, onClose }) => {
                 Create account
               </button>
             </p>
-          </div>
+          </div>*/}
         </form>
 
         {/* Additional Info */}
