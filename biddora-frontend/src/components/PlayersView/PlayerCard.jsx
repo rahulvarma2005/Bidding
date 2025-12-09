@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaGavel, FaTrophy, FaEdit, FaTrash } from 'react-icons/fa';
 // Use a placeholder if image is missing
-import defaultImg from '../../assets/biciklo.jpeg'; // You might want to rename this asset later
+const defaultImg ="https://res.cloudinary.com/dgmzpuyqy/image/upload/v1765256791/IPL-1-2025-09-72362a138a6c5c01fa7e94a604787056_sgd0qq.avif"; // You might want to rename this asset later
 
 const PlayerCard = ({ player, isAdmin, onEdit, onDelete }) => {
   
