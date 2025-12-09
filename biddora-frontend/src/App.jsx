@@ -19,6 +19,7 @@ import LiveAuctionRoom from "./pages/LiveAuctionRoom";
 import CreateTeam from "./pages/CreateTeam";
 import AddPlayer from "./pages/AddPlayer";
 import AuctioneerDashboard from "./pages/AuctioneerDashboard";
+import TeamsSummary from "./pages/TeamsSummary";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -70,6 +71,7 @@ function App() {
           {/* Public Views */}
           <Route path="/" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
           <Route path="/players" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
+          <Route path="/teams" element={<TeamsSummary />} />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/user-view" element={<UsersView />} />

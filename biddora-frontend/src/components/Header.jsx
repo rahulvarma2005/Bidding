@@ -26,6 +26,7 @@ const Header = ({ userId, username, role, onLogout }) => {
   const handleLiveAuctionClick = () => navigate("/live-auction"); // New handler
   const handleUsersClick = () => navigate("/user-view");
   const handleAboutClick = () => navigate("/about-us");
+  const handleTeamsSummaryClick = () => navigate("/teams");
   const handleHomeClick = () => navigate("/");
 
   const fetchFavoritesCount = async () => {
@@ -101,6 +102,15 @@ const Header = ({ userId, username, role, onLogout }) => {
             >
               <FaRunning className="text-sm group-hover:scale-110 transition-transform" />
               <span className="text-sm font-medium">Players</span>
+            </button>
+
+            {/* Teams Summary Link */}
+            <button
+              onClick={handleTeamsSummaryClick}
+              className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 group"
+            >
+              <FaUsers className="text-sm group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-medium">Teams</span>
             </button>
 
             {role === "ADMIN" && (
