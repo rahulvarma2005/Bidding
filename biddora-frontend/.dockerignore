@@ -1,0 +1,25 @@
+# Node / Vite build output
+node_modules/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Tests and coverage
+coverage/
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile

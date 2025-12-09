@@ -1,5 +1,9 @@
-target/*
-!target/biddora-backend.jar
+target/
+
+# Maven wrapper and build
+.mvn/
+mvnw
+mvnw.cmd
 
 # IDE files
 *.iml
@@ -8,16 +12,17 @@ target/*
 .idea/
 .vscode/
 
-# Sistem files
+# System files
 *.log
 *.tmp
 *.bak
 .DS_Store
 Thumbs.db
 
-# Git folders
+# Git
 .git
 .gitignore
 
-# Maven wrapper
-.mvn/
+# Docker
+Dockerfile
+docker-compose.yml
