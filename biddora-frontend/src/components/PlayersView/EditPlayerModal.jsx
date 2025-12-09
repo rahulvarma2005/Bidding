@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaSave, FaGlobe, FaRunning, FaRupeeSign } from 'react-icons/fa';
+import { API_BASE_URL } from '../../config/api';
 
 const EditPlayerModal = ({ player, isOpen, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const EditPlayerModal = ({ player, isOpen, onClose, onSave }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8081/api/players/${player.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/players/${player.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

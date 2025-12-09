@@ -9,6 +9,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 const RegisterForm = ({ setShowRegister }) => {
   const navigate = useNavigate();
@@ -102,7 +103,7 @@ const RegisterForm = ({ setShowRegister }) => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8081/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

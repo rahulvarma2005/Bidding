@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaBox, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { API_BASE_URL } from "../config/api";
 import ProductSmallCard from "./ProductSmallCard";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +15,7 @@ const UserOtherListings = ({ userId }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8081/api/products/user/${userId}`,
+        `${API_BASE_URL}/api/products/user/${userId}`,
         {
           method: "GET",
           headers: {

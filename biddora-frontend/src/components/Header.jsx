@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { RiAdminFill } from "react-icons/ri";
 import FavoriteItem from "./FavoriteItem";
+import { API_BASE_URL } from "../config/api";
 
 const Header = ({ userId, username, role, onLogout }) => {
   const [favoritesCount, setFavoritesCount] = useState(null);
@@ -36,7 +37,7 @@ const Header = ({ userId, username, role, onLogout }) => {
 
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8081/api/favorites/count/${userId}`,
+        `${API_BASE_URL}/api/favorites/count/${userId}`,
         {
           method: "GET",
           headers: {

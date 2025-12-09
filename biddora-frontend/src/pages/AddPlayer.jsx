@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaUserPlus, FaGlobe, FaRunning, FaRupeeSign, FaImage } from 'react-icons/fa';
+import { API_BASE_URL } from '../config/api';
 
 const AddPlayer = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const AddPlayer = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8081/api/players', {
+      const response = await fetch(`${API_BASE_URL}/api/players`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

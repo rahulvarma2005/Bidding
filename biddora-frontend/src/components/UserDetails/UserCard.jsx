@@ -11,6 +11,7 @@ import {
   FaSave
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../config/api";
 
 const UserCard = ({ userId }) => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const UserCard = ({ userId }) => {
       
       setCurrentUser(currentUserData);
 
-      const response = await fetch(`http://localhost:8081/api/user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
         method: 'GET',
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +92,7 @@ const UserCard = ({ userId }) => {
       };
 
   
-      const response = await fetch(`http://localhost:8081/api/user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
         method: 'PUT',
         headers: {
           "Content-Type": "application/json",
@@ -130,7 +131,7 @@ const UserCard = ({ userId }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8081/api/user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",

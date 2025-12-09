@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaGavel, FaHistory, FaMoneyBillWave, FaUsers, FaArrowUp } from 'react-icons/fa';
+import { API_BASE_URL, WS_BASE_URL } from '../config/api';
 
 const LiveAuctionRoom = () => {
 // ... existing state ...
@@ -34,7 +35,7 @@ const connectWebSocket = () => {
 // Prevent multiple connections
 if (ws.current && ws.current.readyState === WebSocket.OPEN) return;
 
-ws.current = new WebSocket('ws://localhost:8081/ws');
+ws.current = new WebSocket(WS_BASE_URL);
 
 ws.current.onopen = () => {
     setWsConnected(true);
@@ -103,7 +104,7 @@ switch (data.type) {
 const fetchCurrentPlayer = async () => {
 // ... existing code ...
 try {
-    const res = await fetch('http://localhost:8081/api/players/all?status=ON_AUCTION');
+    const res = await fetch(`${API_BASE_URL}/api/players/all?status=ON_AUCTION`);
     const data = await res.json();
     if (data.content && data.content.length > 0) {
     const player = data.content[0];
@@ -120,7 +121,7 @@ try {
 // NEW: Fetch existing bids when joining the auction
 const fetchBidsForPlayer = async (playerId, basePrice) => {
   try {
-    const res = await fetch(`http://localhost:8081/api/bid/player/${playerId}?page=0`);
+    const res = await fetch(`${API_BASE_URL}/api/bid/player/${playerId}?page=0`);
     if (res.ok) {
       const data = await res.json();
       const bids = data.content || [];
@@ -148,7 +149,7 @@ const fetchMyTeam = async () => {
 try {
     const token = localStorage.getItem('token');
     if (!token) return;
-    const res = await fetch('http://localhost:8081/api/teams/my-team', {
+    const res = await fetch(`${API_BASE_URL}/api/teams/my-team`, {
     headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
@@ -174,7 +175,7 @@ if (myTeam.remainingPurse < amount) {
 
 try {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:8081/api/bid', {
+    const res = await fetch(`${API_BASE_URL}/api/bid`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaUsers, FaMoneyBillWave, FaShieldAlt, FaCheck } from 'react-icons/fa';
+import { API_BASE_URL } from '../config/api';
 
 const CreateTeam = () => {
 const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ setMessage('');
 
 try {
     const token = localStorage.getItem('token');
-    const response = await fetch('http://localhost:8081/api/teams', {
+    const response = await fetch(`${API_BASE_URL}/api/teams`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

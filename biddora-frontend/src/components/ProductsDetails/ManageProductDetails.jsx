@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config/api';
 
 const ManageProductDetails = ({ productId, currentProductName, currentProductDescription, onProductUpdate, onProductDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -20,7 +21,7 @@ const ManageProductDetails = ({ productId, currentProductName, currentProductDes
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8081/api/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const ManageProductDetails = ({ productId, currentProductName, currentProductDes
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8081/api/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

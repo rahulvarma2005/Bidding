@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaGavel, FaUser, FaRunning, FaUndo } from 'react-icons/fa';
+import { API_BASE_URL } from '../config/api';
 
 const AuctioneerDashboard = () => {
 const [upcomingPlayers, setUpcomingPlayers] = useState([]);
@@ -21,7 +22,7 @@ try {
     const headers = { 'Authorization': `Bearer ${token}` };
 
     // 1. Get ON_AUCTION player
-    const currentRes = await fetch('http://localhost:8081/api/players/all?status=ON_AUCTION', { headers });
+    const currentRes = await fetch(`${API_BASE_URL}/api/players/all?status=ON_AUCTION`, { headers });
     const currentData = await currentRes.json();
     if (currentData.content && currentData.content.length > 0) {
     setCurrentPlayer(currentData.content[0]);
@@ -30,12 +31,12 @@ try {
     }
 
     // 2. Get UPCOMING players
-    const upcomingRes = await fetch('http://localhost:8081/api/players/all?status=UPCOMING&size=100', { headers });
+    const upcomingRes = await fetch(`${API_BASE_URL}/api/players/all?status=UPCOMING&size=100`, { headers });
     const upcomingData = await upcomingRes.json();
     setUpcomingPlayers(upcomingData.content || []);
 
     // 3. Get UNSOLD players
-    const unsoldRes = await fetch('http://localhost:8081/api/players/all?status=UNSOLD&size=100', { headers });
+    const unsoldRes = await fetch(`${API_BASE_URL}/api/players/all?status=UNSOLD&size=100`, { headers });
     const unsoldData = await unsoldRes.json();
     setUnsoldPlayers(unsoldData.content || []);
 
@@ -49,7 +50,7 @@ setLoading(true);
 setMessage('');
 try {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:8081/api/auctioneer/${endpoint}/${playerId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/auctioneer/${endpoint}/${playerId}`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

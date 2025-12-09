@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaSearch, FaFilter } from 'react-icons/fa';
+import { API_BASE_URL } from '../config/api';
 import SidebarFilter from '../components/PlayersView/SidebarFilter';
 import PlayerCard from '../components/PlayersView/PlayerCard';
 import EditPlayerModal from '../components/PlayersView/EditPlayerModal';
@@ -60,7 +61,7 @@ const PlayersView = () => {
       const params = new URLSearchParams({ size: '100' }); // Fetch more for now
       if (search) params.append('name', search);
 
-      const response = await fetch(`http://localhost:8081/api/players/all?${params}`);
+  const response = await fetch(`${API_BASE_URL}/api/players/all?${params}`);
       const data = await response.json();
       setPlayers(data.content || []);
     } catch (err) {
@@ -85,7 +86,7 @@ const PlayersView = () => {
   const handleDeletePlayer = async (playerId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8081/api/players/${playerId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/players/${playerId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

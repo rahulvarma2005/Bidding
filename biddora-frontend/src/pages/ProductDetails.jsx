@@ -9,6 +9,7 @@ import ProductDescription from "../components/ProductsDetails/ProductDescription
 import CommentSection from "../components/ProductsDetails/CommentSection";
 import UserOtherListings from "../components/UserOtherListings";
 import ManageProductDetails from "../components/ProductsDetails/ManageProductDetails";
+import { API_BASE_URL } from "../config/api";
 import { useParams } from "react-router-dom";
 
 const ProductDetails = () => {
@@ -30,7 +31,7 @@ const ProductDetails = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8081/api/products/${productId}`,
+        `${API_BASE_URL}/api/products/${productId}`,
         {
           method: "GET",
           headers: {

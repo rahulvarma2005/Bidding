@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CiEdit } from 'react-icons/ci';
 import { FaUser, FaTrash, FaEnvelope, FaCalendarAlt, FaUserTag, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
+import { API_BASE_URL } from '../config/api';
 
 const MyProfile = () => {
   const [user, setUser] = useState(null);
@@ -44,7 +45,7 @@ const MyProfile = () => {
   const handleDeleteAccount = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:8081/api/user/${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/${user.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +85,7 @@ const MyProfile = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:8081/api/user/${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -8,6 +8,7 @@ import {
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
+import { API_BASE_URL } from "../../config/api";
 
 const CommentSection = ({ productId }) => {
   const [comments, setComments] = useState([]);
@@ -22,7 +23,7 @@ const CommentSection = ({ productId }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8081/api/ratings/product/${productId}`,
+        `${API_BASE_URL}/api/ratings/product/${productId}`,
         {
           method: "GET",
           headers: {
@@ -73,7 +74,7 @@ const CommentSection = ({ productId }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8081/api/ratings", {
+      const response = await fetch(`${API_BASE_URL}/api/ratings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

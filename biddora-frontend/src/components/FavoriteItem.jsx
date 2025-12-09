@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaTimes, FaHeart, FaTrash, FaShoppingBag, FaUser, FaExclamationTriangle } from "react-icons/fa";
+import { API_BASE_URL } from "../config/api";
 
 const FavoriteItem = ({ setShowFavorites, onFavoriteUpdate }) => {
   const [favorites, setFavorites] = useState([]);
@@ -12,7 +13,7 @@ const FavoriteItem = ({ setShowFavorites, onFavoriteUpdate }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8081/api/favorites`, {
+      const response = await fetch(`${API_BASE_URL}/api/favorites`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -37,7 +38,7 @@ const FavoriteItem = ({ setShowFavorites, onFavoriteUpdate }) => {
     setRemovingId(productId);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8081/api/favorites/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/favorites/${productId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

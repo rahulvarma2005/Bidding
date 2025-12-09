@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaArrowLeft, FaArrowRight, FaUsers, FaExclamationTriangle } from "react-icons/fa";
 import UserPreviewCard from "../components/UserPreviewCard";
+import { API_BASE_URL } from "../config/api";
 
 const UsersView = () => {
   const [users, setUsers] = useState([]); 
@@ -23,7 +24,7 @@ const UsersView = () => {
         params.append('username', search); 
       }
 
-      const response = await fetch(`http://localhost:8081/api/user/all?${params}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/all?${params}`, {
         method: 'GET',
         headers: {
           "Content-Type": "application/json",

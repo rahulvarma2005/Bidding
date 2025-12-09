@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaTimes, FaSignInAlt, FaQuestionCircle } from "react-icons/fa";
+import { API_BASE_URL } from "../config/api";
 
 const LoginForm = ({ onLogin, onClose }) => {
   const [username, setUsername] = useState('');
@@ -39,7 +40,7 @@ const LoginForm = ({ onLogin, onClose }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8081/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

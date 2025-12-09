@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const TeamsSummary = () => {
   const [teams, setTeams] = useState([]);
@@ -10,7 +11,7 @@ const TeamsSummary = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('http://localhost:8081/api/teams');
+        const res = await fetch(`${API_BASE_URL}/api/teams`);
         if (!res.ok) {
           throw new Error('Failed to load teams');
         }

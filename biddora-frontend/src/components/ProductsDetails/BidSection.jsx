@@ -8,6 +8,7 @@ import {
   FaTrophy,
   FaCalendarAlt,
 } from "react-icons/fa";
+import { API_BASE_URL, WS_BASE_URL } from "../../config/api";
 import { data } from "react-router-dom";
 
 const BidSection = ({ productId, productStatus }) => {
@@ -29,7 +30,7 @@ const BidSection = ({ productId, productStatus }) => {
       }
 
       const response = await fetch(
-        `http://localhost:8081/api/bid/product/${productId}?page=0&size=3`,
+        `${API_BASE_URL}/api/bid/product/${productId}?page=0&size=3`,
         {
           method: "GET",
           headers: {
@@ -80,7 +81,7 @@ const BidSection = ({ productId, productStatus }) => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:8081/api/bid", {
+      const response = await fetch(`${API_BASE_URL}/api/bid`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +115,7 @@ const BidSection = ({ productId, productStatus }) => {
   const handleWebSocketConnection = () => {
     if (socketRef.current) return;
 
-    const ws = new WebSocket("ws://localhost:8081/ws");
+    const ws = new WebSocket(WS_BASE_URL);
 
     ws.onopen = () => {
       console.log("Connected to WebSocket");
