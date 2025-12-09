@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll() // WebSocket
+                    .requestMatchers("/api/health").permitAll()
                         // Public Read Access
                         .requestMatchers(HttpMethod.GET, "/api/players/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/teams/**").permitAll()
