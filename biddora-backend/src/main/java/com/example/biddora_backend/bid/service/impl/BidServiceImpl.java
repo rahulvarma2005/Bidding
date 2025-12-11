@@ -34,9 +34,9 @@ public class BidServiceImpl implements BidService {
     private final EntityFetcher entityFetcher;
     private final SocketConnectionHandler socketConnectionHandler;
 
-    // Constants for Squad Limits
-    private static final int MAX_SQUAD_SIZE = 25;
-    private static final int MAX_OVERSEAS_PLAYERS = 8;
+    // Default limits used if team-specific limits are not set
+    private static final int DEFAULT_MAX_SQUAD_SIZE = 25;
+    private static final int DEFAULT_MAX_OVERSEAS_PLAYERS = 8;
 
     @Override
     @Transactional
@@ -72,20 +72,21 @@ public class BidServiceImpl implements BidService {
             throw new BidAccessDeniedException("Insufficient funds! Your remaining purse is: " + team.getRemainingPurse());
         }
 
-        // 4. RULE: Check Squad Size Limit
-        // We include the current player in the count temporarily to see if it breaches limit
-        if (team.getSquad().size() >= MAX_SQUAD_SIZE) {
-            throw new BidAccessDeniedException("Squad full! You cannot buy more than " + MAX_SQUAD_SIZE + " players.");
+        // 4. RULE: Check Squad Size Limit (team-specific, with sensible default)
+        int maxSquadSize = team.getMaxSquadSize() != null ? team.getMaxSquadSize() : DEFAULT_MAX_SQUAD_SIZE;
+        if (team.getSquad().size() >= maxSquadSize) {
+            throw new BidAccessDeniedException("Squad full! You cannot buy more than " + maxSquadSize + " players.");
         }
 
-        // 5. RULE: Check Overseas Limit
+        // 5. RULE: Check Overseas Limit (team-specific, with sensible default)
         if (player.getNationality() == Nationality.OVERSEAS) {
             long currentOverseasCount = team.getSquad().stream()
                     .filter(p -> p.getNationality() == Nationality.OVERSEAS)
                     .count();
 
-            if (currentOverseasCount >= MAX_OVERSEAS_PLAYERS) {
-                throw new BidAccessDeniedException("Foreign quota full! You cannot have more than " + MAX_OVERSEAS_PLAYERS + " overseas players.");
+            int maxOverseasPlayers = team.getMaxOverseasPlayers() != null ? team.getMaxOverseasPlayers() : DEFAULT_MAX_OVERSEAS_PLAYERS;
+            if (currentOverseasCount >= maxOverseasPlayers) {
+                throw new BidAccessDeniedException("Foreign quota full! You cannot have more than " + maxOverseasPlayers + " overseas players.");
             }
         }
 

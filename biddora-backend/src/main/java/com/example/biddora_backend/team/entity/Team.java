@@ -38,6 +38,12 @@ public class Team {
     @Column(name = "remaining_purse")
     private Long remainingPurse;
 
+    @Column(name = "max_squad_size")
+    private Integer maxSquadSize;
+
+    @Column(name = "max_overseas_players")
+    private Integer maxOverseasPlayers;
+
     // Link specific User account to this Team
     @OneToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")

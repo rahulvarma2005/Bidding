@@ -40,6 +40,8 @@ public class TeamServiceImpl implements TeamService {
         team.setLogoUrl(dto.getLogoUrl());
         team.setTotalPurse(dto.getTotalPurse());
         team.setRemainingPurse(dto.getTotalPurse());
+        team.setMaxSquadSize(dto.getMaxSquadSize());
+        team.setMaxOverseasPlayers(dto.getMaxOverseasPlayers());
         team.setOwner(owner);
 
         return teamRepo.save(team);

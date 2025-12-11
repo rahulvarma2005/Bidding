@@ -337,8 +337,8 @@ return (
             </div>
 
             <div className="flex justify-between text-xs text-gray-400 pt-2">
-            <span>Squad: {myTeam.squad ? myTeam.squad.length : 0}/25</span>
-            <span>Overseas: {myTeam.squad ? myTeam.squad.filter(p => p.nationality === 'OVERSEAS').length : 0}/8</span>
+            <span>Squad: {myTeam.squad ? myTeam.squad.length : 0}/{myTeam.maxSquadSize ?? 25}</span>
+            <span>Overseas: {myTeam.squad ? myTeam.squad.filter(p => p.nationality === 'OVERSEAS').length : 0}/{myTeam.maxOverseasPlayers ?? 8}</span>
             </div>
         </div>
         </div>

@@ -12,6 +12,8 @@ public class TeamDto {
     private String logoUrl;
     private Long totalPurse;
     private Long remainingPurse;
+    private Integer maxSquadSize;
+    private Integer maxOverseasPlayers;
     private String ownerUsername; // Only show username, not full User object
     private List<PlayerDto> squad; // Show purchased players
 }

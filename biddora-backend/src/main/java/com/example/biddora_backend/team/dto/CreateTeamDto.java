@@ -9,4 +9,6 @@ public class CreateTeamDto {
     private String logoUrl;
     private Long totalPurse;
     private String ownerUsername; // We link by username
+    private Integer maxSquadSize;
+    private Integer maxOverseasPlayers;
 }

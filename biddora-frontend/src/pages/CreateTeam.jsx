@@ -8,7 +8,9 @@ teamName: '',
 acronym: '',
 logoUrl: '',
 totalPurse: 100000000, // Default 100 Cr (or whatever currency unit)
-ownerUsername: ''
+ownerUsername: '',
+maxSquadSize: 25,
+maxOverseasPlayers: 8
 });
 const [loading, setLoading] = useState(false);
 const [message, setMessage] = useState('');
@@ -36,7 +38,7 @@ try {
     if (!response.ok) throw new Error('Failed to create team');
     
     setMessage('Team created successfully!');
-    setFormData({ teamName: '', acronym: '', logoUrl: '', totalPurse: 100000000, ownerUsername: '' });
+    setFormData({ teamName: '', acronym: '', logoUrl: '', totalPurse: 100000000, ownerUsername: '', maxSquadSize: 25, maxOverseasPlayers: 8 });
 } catch (error) {
     setMessage(error.message);
 } finally {
@@ -99,18 +101,48 @@ return (
         <p className="text-xs text-gray-500 mt-1">Must match an existing registered user.</p>
     </div>
 
-    <div>
+    <div className="grid grid-cols-3 gap-4">
+        <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Total Purse</label>
         <div className="relative">
-        <FaMoneyBillWave className="absolute left-3 top-3 text-gray-400" />
-        <input
+            <FaMoneyBillWave className="absolute left-3 top-3 text-gray-400" />
+            <input
             type="number"
             name="totalPurse"
             value={formData.totalPurse}
             onChange={handleChange}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
             required
+            />
+        </div>
+        </div>
+
+        <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Max Squad Size</label>
+        <input
+            type="number"
+            name="maxSquadSize"
+            value={formData.maxSquadSize}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+            min={1}
+            required
         />
+        <p className="text-xs text-gray-500 mt-1">Total number of players allowed in the squad.</p>
+        </div>
+
+        <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Max Overseas Players</label>
+        <input
+            type="number"
+            name="maxOverseasPlayers"
+            value={formData.maxOverseasPlayers}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+            min={0}
+            required
+        />
+        <p className="text-xs text-gray-500 mt-1">Maximum overseas players allowed in the squad.</p>
         </div>
     </div>
 
