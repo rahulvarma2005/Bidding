@@ -87,14 +87,16 @@ const Header = ({ userId, username, role, onLogout }) => {
         {/* Navigation and Search */}
         <div className="hidden md:flex items-center justify-center flex-1 max-w-2xl mx-8">
           <nav className="flex items-center space-x-8 mr-8">
-            {/* Live Auction Link (New) */}
-            <button
-              onClick={handleLiveAuctionClick}
-              className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors duration-200 group font-bold animate-pulse"
-            >
-              <FaGavel className="text-lg group-hover:rotate-12 transition-transform" />
-              <span className="text-sm">LIVE AUCTION</span>
-            </button>
+            {/* Live Auction Link (visible only when logged in) */}
+            {username && (
+              <button
+                onClick={handleLiveAuctionClick}
+                className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors duration-200 group font-bold animate-pulse"
+              >
+                <FaGavel className="text-lg group-hover:rotate-12 transition-transform" />
+                <span className="text-sm">LIVE AUCTION</span>
+              </button>
+            )}
 
             {/* Players Link (Renamed from Products) */}
             <button
@@ -252,13 +254,15 @@ const Header = ({ userId, username, role, onLogout }) => {
           <span className="text-xs mt-1">Players</span>
         </button>
 
-        <button
-          onClick={handleLiveAuctionClick}
-          className="flex flex-col items-center text-red-600 hover:text-red-700 transition-colors animate-pulse"
-        >
-          <FaGavel className="w-6 h-6" />
-          <span className="text-xs mt-1 font-bold">AUCTION</span>
-        </button>
+        {username && (
+          <button
+            onClick={handleLiveAuctionClick}
+            className="flex flex-col items-center text-red-600 hover:text-red-700 transition-colors animate-pulse"
+          >
+            <FaGavel className="w-6 h-6" />
+            <span className="text-xs mt-1 font-bold">AUCTION</span>
+          </button>
+        )}
 
         {username ? (
           <button

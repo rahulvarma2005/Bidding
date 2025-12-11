@@ -76,7 +76,10 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/user-view" element={<UsersView />} />
           <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/live-auction" element={<LiveAuctionRoom />} />
+          <Route
+            path="/live-auction"
+            element={isAuthenticated ? <LiveAuctionRoom /> : <LoginForm onLogin={handleLogin} />}
+          />
 
           {/* Protected Routes */}
           <Route path="/my-profile" element={isAuthenticated ? <MyProfile /> : <LoginForm onLogin={handleLogin} />} />
