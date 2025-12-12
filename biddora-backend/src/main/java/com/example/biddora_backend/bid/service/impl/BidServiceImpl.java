@@ -49,6 +49,7 @@ public class BidServiceImpl implements BidService {
     private static final long INCREMENT_TWO_TO_FIVE_CRORE = 20 * ONE_LAKH;   // 20 lakh
     private static final long INCREMENT_ABOVE_FIVE_CRORE = 25 * ONE_LAKH;    // 25 lakh
 
+
     @Override
     @Transactional
     public BidDto placeBid(CreateBidDto createBidDto) {
@@ -69,6 +70,7 @@ public class BidServiceImpl implements BidService {
         Bid highestBid = highestBidOpt.orElse(null);
 
         Long newAmount = createBidDto.getAmount();
+        boolean enforceSlab = Boolean.TRUE.equals(createBidDto.getEnforceSlab());
 
         if (highestBid == null) {
             // Case 1: No bids yet. The first bid must be at least the base price.
@@ -80,17 +82,18 @@ public class BidServiceImpl implements BidService {
             if (highestBid.getUser() != null && highestBid.getUser().getId().equals(user.getId())) {
                 throw new BidAccessDeniedException("You cannot place two consecutive bids for the same team.");
             }
-
-            // Case 2: Bids exist. The new bid must be strictly higher than the current highest.
-            if (newAmount <= currentHighest) {
-                throw new BidException("Bid must be higher than the current highest bid: " + currentHighest);
-            }
         }
 
-        // 2a. RULE: Enforce slab-based incremental bids
-        if (newAmount > currentHighest) {
-            long requiredIncrement = getRequiredIncrementForCurrentAmount(currentHighest);
-            long difference = newAmount - currentHighest;
+        // New bid must always be strictly higher than currentHighest
+        if (newAmount <= currentHighest) {
+            throw new BidException("Bid must be higher than the current highest bid: " + currentHighest);
+        }
+
+        // 2a. RULE: Enforce slab-based incremental bids ONLY when requested (e.g., quick bid button)
+        if (enforceSlab) {
+            long referenceAmount = highestBidOpt.isPresent() ? currentHighest : player.getBasePrice();
+            long requiredIncrement = getRequiredIncrementForCurrentAmount(referenceAmount);
+            long difference = newAmount - referenceAmount;
 
             if (difference < requiredIncrement || difference % requiredIncrement != 0) {
                 throw new BidException("Invalid bid increment. For this price range, bids must increase by Rs "
@@ -161,6 +164,7 @@ public class BidServiceImpl implements BidService {
             return INCREMENT_ABOVE_FIVE_CRORE;
         }
     }
+
 
     @Override
     public Page<BidDto> getBidsByProductId(Long playerId, Optional<Integer> page){

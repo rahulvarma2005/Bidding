@@ -17,4 +17,8 @@ public class CreateBidDto {
 
     @NotNull(message = "Set amount.")
     private Long amount;
+
+    // When true, backend will enforce slab-based increments.
+    // Custom bids should typically send this as false or omit it.
+    private Boolean enforceSlab;
 }

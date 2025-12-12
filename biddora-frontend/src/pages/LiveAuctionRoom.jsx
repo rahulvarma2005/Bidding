@@ -187,7 +187,7 @@ const getIncrementForAmount = (amount) => {
     return TWENTY_FIVE_LAKH;
 };
 
-const sendBidToBackend = async (amount) => {
+const sendBidToBackend = async (amount, enforceSlab = false) => {
     // ... existing code ...
     if (!myTeam) {
     alert("You must be logged in as a Team Owner to bid.");
@@ -209,7 +209,8 @@ try {
     },
     body: JSON.stringify({
         playerId: currentPlayer.id,
-        amount: amount
+        amount: amount,
+        enforceSlab: enforceSlab
     })
     });
 
@@ -231,7 +232,7 @@ const handleQuickBid = () => {
     const increment = getIncrementForAmount(currentBid);
     const nextBidAmount = currentBid + increment;
 
-    sendBidToBackend(nextBidAmount);
+    sendBidToBackend(nextBidAmount, true);
 };
 
 const handleCustomBid = (e) => {
