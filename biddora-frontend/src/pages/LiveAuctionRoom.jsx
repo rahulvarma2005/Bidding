@@ -7,6 +7,7 @@ const LiveAuctionRoom = () => {
 const [currentPlayer, setCurrentPlayer] = useState(null);
 const [currentBid, setCurrentBid] = useState(0);
 const [bidHistory, setBidHistory] = useState([]);
+const [currentBidTeam, setCurrentBidTeam] = useState(null);
 const [myTeam, setMyTeam] = useState(null);
 const [wsConnected, setWsConnected] = useState(false);
 const [message, setMessage] = useState('');
@@ -61,6 +62,7 @@ switch (data.type) {
     case 'BID_UPDATE':
     const newBid = data.payload;
     setCurrentBid(newBid.amount);
+    setCurrentBidTeam(newBid.bidderTeamName || null);
     
     // --- CHANGED: Prevent Duplicates ---
     setBidHistory(prev => {
@@ -130,17 +132,20 @@ const fetchBidsForPlayer = async (playerId, basePrice) => {
         // Bids come sorted by amount DESC (highest first)
         // Set current bid to the highest bid (first item)
         setCurrentBid(bids[0].amount);
+        setCurrentBidTeam(bids[0].bidderTeamName || null);
         // Reverse to show in chronological order (oldest/lowest first) for bid history
         setBidHistory(bids.reverse());
       } else {
         // No bids yet, use base price
         setCurrentBid(basePrice);
+        setCurrentBidTeam(null);
         setBidHistory([]);
       }
     }
   } catch (err) {
     console.error("Failed to fetch bids:", err);
     setCurrentBid(basePrice);
+    setCurrentBidTeam(null);
   }
 };
 
@@ -159,6 +164,27 @@ try {
 } catch (err) {
     console.error(err);
 }
+};
+
+// Utility: determine required bid increment based on current amount (in rupees)
+//  - Up to ₹1 crore: ₹5 lakh
+//  - ₹1–2 crore: ₹10 lakh
+//  - ₹2–5 crore: ₹20 lakh
+//  - Above ₹5 crore: ₹25 lakh
+const getIncrementForAmount = (amount) => {
+    const ONE_CRORE = 10_000_000;   // 1 cr
+    const TWO_CRORE = 20_000_000;   // 2 cr
+    const FIVE_CRORE = 50_000_000;  // 5 cr
+
+    const FIVE_LAKH = 500_000;
+    const TEN_LAKH = 1_000_000;
+    const TWENTY_LAKH = 2_000_000;
+    const TWENTY_FIVE_LAKH = 2_500_000;
+
+    if (amount < ONE_CRORE) return FIVE_LAKH;
+    if (amount < TWO_CRORE) return TEN_LAKH;
+    if (amount < FIVE_CRORE) return TWENTY_LAKH;
+    return TWENTY_FIVE_LAKH;
 };
 
 const sendBidToBackend = async (amount) => {
@@ -200,11 +226,12 @@ try {
 };
 
 const handleQuickBid = () => {
-if (!currentPlayer) return;
-let increment = 500000; 
-if (currentBid >= 10000000) increment = 2000000; 
-const nextBidAmount = currentBid + increment;
-sendBidToBackend(nextBidAmount);
+    if (!currentPlayer) return;
+
+    const increment = getIncrementForAmount(currentBid);
+    const nextBidAmount = currentBid + increment;
+
+    sendBidToBackend(nextBidAmount);
 };
 
 const handleCustomBid = (e) => {
@@ -253,11 +280,6 @@ return (
         )}
 
         <div className="flex-grow bg-gradient-to-br from-blue-900 to-purple-900 relative flex flex-col items-center justify-center p-8">
-        <img 
-            src={currentPlayer.imageUrl || "https://via.placeholder.com/400"} 
-            alt={currentPlayer.name}
-            className="h-48 w-48 md:h-64 md:w-64 rounded-full border-8 border-white/20 object-cover shadow-2xl mb-6"
-        />
         <div className="text-center text-white z-10">
             <h1 className="text-4xl md:text-5xl font-bold mb-2">{currentPlayer.name}</h1>
             <div className="flex justify-center items-center space-x-4 text-blue-200">
@@ -274,6 +296,11 @@ return (
             <p className="text-4xl md:text-5xl font-mono font-bold text-gray-800">
                 ₹{currentBid.toLocaleString()}
             </p>
+            {currentBidTeam && (
+                <p className="mt-2 text-sm text-gray-600">
+                Highest bid by <span className="font-semibold">{currentBidTeam}</span>
+                </p>
+            )}
             </div>
 
             {currentPlayer.status === 'ON_AUCTION' && (

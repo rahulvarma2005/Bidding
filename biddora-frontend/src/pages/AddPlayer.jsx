@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaUserPlus, FaGlobe, FaRunning, FaRupeeSign, FaImage } from 'react-icons/fa';
+import { FaUserPlus, FaGlobe, FaRunning, FaRupeeSign } from 'react-icons/fa';
 import { API_BASE_URL } from '../config/api';
 
 const AddPlayer = () => {
@@ -8,8 +8,7 @@ const AddPlayer = () => {
     nationality: 'INDIAN',
     role: 'BATSMAN',
     basePrice: '',
-    stats: '',
-    imageUrl: ''
+    stats: ''
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -36,7 +35,7 @@ const AddPlayer = () => {
       if (!response.ok) throw new Error('Failed to add player');
       
       setMessage('Player added to auction pool!');
-      setFormData({ name: '', nationality: 'INDIAN', role: 'BATSMAN', basePrice: '', stats: '', imageUrl: '' });
+      setFormData({ name: '', nationality: 'INDIAN', role: 'BATSMAN', basePrice: '', stats: '' });
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -133,31 +132,7 @@ const AddPlayer = () => {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Player Photo URL (Optional)</label>
-          <div className="relative">
-            <FaImage className="absolute left-3 top-3 text-gray-400" />
-            <input
-              type="url"
-              name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="https://example.com/player-photo.jpg"
-            />
-          </div>
-          {formData.imageUrl && (
-            <div className="mt-3">
-              <p className="text-sm text-gray-500 mb-2">Preview:</p>
-              <img 
-                src={formData.imageUrl} 
-                alt="Player preview" 
-                className="w-24 h-24 object-cover rounded-lg border border-gray-200"
-                onError={(e) => e.target.style.display = 'none'}
-              />
-            </div>
-          )}
-        </div>
+        {/* Photo option removed intentionally */}
 
         <button
           type="submit"

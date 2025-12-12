@@ -1,7 +1,5 @@
 import React from 'react';
 import { FaGavel, FaTrophy, FaEdit, FaTrash } from 'react-icons/fa';
-// Use a placeholder if image is missing
-const defaultImg ="https://res.cloudinary.com/dgmzpuyqy/image/upload/v1765256791/IPL-1-2025-09-72362a138a6c5c01fa7e94a604787056_sgd0qq.avif"; // You might want to rename this asset later
 
 const PlayerCard = ({ player, isAdmin, onEdit, onDelete }) => {
   
@@ -27,38 +25,7 @@ const PlayerCard = ({ player, isAdmin, onEdit, onDelete }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 group">
-      <div className="relative h-48 overflow-hidden">
-        <img 
-          src={player.imageUrl || defaultImg} 
-          alt={player.name} 
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-        <div className="absolute top-2 right-2">
-          {getStatusBadge(player.status)}
-        </div>
-        
-        {/* Admin Actions */}
-        {isAdmin && (
-          <div className="absolute top-2 left-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={handleEdit}
-              className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors shadow-lg"
-              title="Edit Player"
-            >
-              <FaEdit className="w-3 h-3" />
-            </button>
-            <button
-              onClick={handleDelete}
-              className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
-              title="Delete Player"
-            >
-              <FaTrash className="w-3 h-3" />
-            </button>
-          </div>
-        )}
-      </div>
-
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 group">
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div>
@@ -70,6 +37,10 @@ const PlayerCard = ({ player, isAdmin, onEdit, onDelete }) => {
                {player.nationality}
              </span>
           </div>
+        </div>
+
+        <div className="mb-2">
+          {getStatusBadge(player.status)}
         </div>
 
         {/* Stats Preview */}

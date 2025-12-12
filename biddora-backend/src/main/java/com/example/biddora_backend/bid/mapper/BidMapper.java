@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface BidMapper {
     @Mapping(source = "player.id", target = "playerId") // Updated source/target
     @Mapping(source = "user.username", target = "bidderUsername")
+    @Mapping(source = "user.team.teamName", target = "bidderTeamName")
     BidDto mapToDto(Bid bid);
 }

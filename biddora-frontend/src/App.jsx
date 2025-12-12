@@ -69,17 +69,14 @@ function App() {
       <Layout>
         <Routes>
           {/* Public Views */}
-          <Route path="/" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
+          <Route path="/" element={<TeamsSummary />} />
           <Route path="/players" element={<PlayersView isAuthenticated={isAuthenticated}/>} />
           <Route path="/teams" element={<TeamsSummary />} />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/user-view" element={<UsersView />} />
           <Route path="/about-us" element={<AboutUs />} />
-          <Route
-            path="/live-auction"
-            element={isAuthenticated ? <LiveAuctionRoom /> : <LoginForm onLogin={handleLogin} />}
-          />
+          <Route path="/live-auction" element={<LiveAuctionRoom />} />
 
           {/* Protected Routes */}
           <Route path="/my-profile" element={isAuthenticated ? <MyProfile /> : <LoginForm onLogin={handleLogin} />} />

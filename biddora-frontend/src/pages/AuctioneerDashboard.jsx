@@ -93,10 +93,6 @@ return (
     
     {currentPlayer ? (
         <div className="flex flex-col md:flex-row items-center gap-8">
-        <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-4xl">
-            {currentPlayer.imageUrl ? <img src={currentPlayer.imageUrl} alt={currentPlayer.name} className="w-full h-full rounded-full object-cover"/> : "🏏"}
-        </div>
-        
         <div className="flex-1">
             <h3 className="text-3xl font-bold">{currentPlayer.name}</h3>
             <p className="text-gray-600 text-lg">{currentPlayer.role} | {currentPlayer.nationality}</p>

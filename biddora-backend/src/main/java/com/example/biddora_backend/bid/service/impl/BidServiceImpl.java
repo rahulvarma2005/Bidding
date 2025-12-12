@@ -38,6 +38,17 @@ public class BidServiceImpl implements BidService {
     private static final int DEFAULT_MAX_SQUAD_SIZE = 25;
     private static final int DEFAULT_MAX_OVERSEAS_PLAYERS = 8;
 
+    // Currency thresholds and increments (values in rupees)
+    private static final long ONE_LAKH = 100_000L;
+    private static final long ONE_CRORE = 10_000_000L;   // 1 cr = 100 lakh
+    private static final long TWO_CRORE = 20_000_000L;
+    private static final long FIVE_CRORE = 50_000_000L;
+
+    private static final long INCREMENT_UP_TO_ONE_CRORE = 5 * ONE_LAKH;      // 5 lakh
+    private static final long INCREMENT_ONE_TO_TWO_CRORE = 10 * ONE_LAKH;    // 10 lakh
+    private static final long INCREMENT_TWO_TO_FIVE_CRORE = 20 * ONE_LAKH;   // 20 lakh
+    private static final long INCREMENT_ABOVE_FIVE_CRORE = 25 * ONE_LAKH;    // 25 lakh
+
     @Override
     @Transactional
     public BidDto placeBid(CreateBidDto createBidDto) {
@@ -51,19 +62,39 @@ public class BidServiceImpl implements BidService {
             throw new BidException("This player is not currently on the auction table.");
         }
 
-        // 2. Validate Bid Amount vs Current Highest
+        // 2. Validate Bid Amount vs Current Highest and prevent consecutive bids from same team
         Optional<Bid> highestBidOpt = bidRepo.findTopByPlayerOrderByAmountDesc(player);
         Long currentHighest = highestBidOpt.map(Bid::getAmount).orElse(player.getBasePrice());
 
-        if (highestBidOpt.isEmpty()) {
+        Bid highestBid = highestBidOpt.orElse(null);
+
+        Long newAmount = createBidDto.getAmount();
+
+        if (highestBid == null) {
             // Case 1: No bids yet. The first bid must be at least the base price.
-            if (createBidDto.getAmount() < player.getBasePrice()) {
+            if (newAmount < player.getBasePrice()) {
                 throw new BidException("Bid cannot be lower than the base price: " + player.getBasePrice());
             }
         } else {
+            // RULE: Prevent same team/user from placing consecutive bids
+            if (highestBid.getUser() != null && highestBid.getUser().getId().equals(user.getId())) {
+                throw new BidAccessDeniedException("You cannot place two consecutive bids for the same team.");
+            }
+
             // Case 2: Bids exist. The new bid must be strictly higher than the current highest.
-            if (createBidDto.getAmount() <= currentHighest) {
+            if (newAmount <= currentHighest) {
                 throw new BidException("Bid must be higher than the current highest bid: " + currentHighest);
+            }
+        }
+
+        // 2a. RULE: Enforce slab-based incremental bids
+        if (newAmount > currentHighest) {
+            long requiredIncrement = getRequiredIncrementForCurrentAmount(currentHighest);
+            long difference = newAmount - currentHighest;
+
+            if (difference < requiredIncrement || difference % requiredIncrement != 0) {
+                throw new BidException("Invalid bid increment. For this price range, bids must increase by Rs "
+                        + requiredIncrement + ".");
             }
         }
 
@@ -108,6 +139,27 @@ public class BidServiceImpl implements BidService {
         }
 
         return mappedBid;
+    }
+
+    /**
+     * Determines the required incremental bid step based on the current highest amount.
+     *
+     * Logic:
+     *  - Up to Rs 1 crore: Rs 5 lakh
+     *  - Rs 1 to 2 crore: Rs 10 lakh
+     *  - Rs 2 to 5 crore: Rs 20 lakh
+     *  - Rs 5 crore onward: Rs 25 lakh
+     */
+    private long getRequiredIncrementForCurrentAmount(long currentAmount) {
+        if (currentAmount < ONE_CRORE) {
+            return INCREMENT_UP_TO_ONE_CRORE;
+        } else if (currentAmount < TWO_CRORE) {
+            return INCREMENT_ONE_TO_TWO_CRORE;
+        } else if (currentAmount < FIVE_CRORE) {
+            return INCREMENT_TWO_TO_FIVE_CRORE;
+        } else {
+            return INCREMENT_ABOVE_FIVE_CRORE;
+        }
     }
 
     @Override

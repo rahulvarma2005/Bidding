@@ -9,7 +9,6 @@ const EditPlayerModal = ({ player, isOpen, onClose, onSave }) => {
     role: 'BATSMAN',
     basePrice: '',
     stats: '',
-    imageUrl: '',
     status: 'UPCOMING'
   });
   const [loading, setLoading] = useState(false);
@@ -23,7 +22,6 @@ const EditPlayerModal = ({ player, isOpen, onClose, onSave }) => {
         role: player.role || 'BATSMAN',
         basePrice: player.basePrice || '',
         stats: player.stats || '',
-        imageUrl: player.imageUrl || '',
         status: player.status || 'UPCOMING'
       });
     }
@@ -168,16 +166,7 @@ const EditPlayerModal = ({ player, isOpen, onClose, onSave }) => {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Image URL (Optional)</label>
-            <input
-              name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="https://example.com/player-image.jpg"
-            />
-          </div>
+          {/* Image URL field removed intentionally */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Stats (Optional)</label>

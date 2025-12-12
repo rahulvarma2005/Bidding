@@ -23,7 +23,7 @@ const Header = ({ userId, username, role, onLogout }) => {
   const navigate = useNavigate();
 
   const handleLoginClick = () => navigate("/login");
-  const handlePlayersClick = () => navigate("/"); // Renamed handler
+  const handlePlayersClick = () => navigate("/players");
   const handleLiveAuctionClick = () => navigate("/live-auction"); // New handler
   const handleUsersClick = () => navigate("/user-view");
   const handleAboutClick = () => navigate("/about-us");
@@ -99,13 +99,13 @@ const Header = ({ userId, username, role, onLogout }) => {
             )}
 
             {/* Players Link (Renamed from Products) */}
-            <button
+           {/*} <button
               onClick={handlePlayersClick}
               className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 group"
             >
               <FaRunning className="text-sm group-hover:scale-110 transition-transform" />
               <span className="text-sm font-medium">Players</span>
-            </button>
+            </button>*/}
 
             {/* Teams Summary Link */}
             <button
@@ -190,19 +190,19 @@ const Header = ({ userId, username, role, onLogout }) => {
                 {/* User Menu Popup */}
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                    <button
-                      onClick={() => {
-                        navigate("/my-profile");
-                        setShowUserMenu(false);
-                      }}
-                      className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-200"
-                    >
-                      <FaUser className="w-4 h-4" />
-                      <span>My profile</span>
-                    </button>
-
                     {role === "ADMIN" && (
                       <>
+                        <button
+                          onClick={() => {
+                            navigate("/my-profile");
+                            setShowUserMenu(false);
+                          }}
+                          className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 transition-colors duration-200"
+                        >
+                          <FaUser className="w-4 h-4" />
+                          <span>My profile</span>
+                        </button>
+
                         <button
                           onClick={() => {
                             navigate("/admin-panel");
@@ -247,11 +247,11 @@ const Header = ({ userId, username, role, onLogout }) => {
       {/* Mobile Navigation */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-6 flex justify-around items-center shadow-lg z-40">
         <button
-          onClick={handleHomeClick}
+          onClick={handleTeamsSummaryClick}
           className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
         >
-          <FaRunning className="w-5 h-5" />
-          <span className="text-xs mt-1">Players</span>
+          <FaUsers className="w-5 h-5" />
+          <span className="text-xs mt-1">Teams</span>
         </button>
 
         {username && (
@@ -264,7 +264,7 @@ const Header = ({ userId, username, role, onLogout }) => {
           </button>
         )}
 
-        {username ? (
+        {username && role === "ADMIN" ? (
           <button
             onClick={() => navigate("/my-profile")}
             className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
@@ -272,7 +272,7 @@ const Header = ({ userId, username, role, onLogout }) => {
             <FaUser className="w-5 h-5" />
             <span className="text-xs mt-1">Profile</span>
           </button>
-        ) : (
+        ) : !username ? (
           <button
             onClick={handleLoginClick}
             className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
@@ -280,7 +280,7 @@ const Header = ({ userId, username, role, onLogout }) => {
             <FaUser className="w-5 h-5" />
             <span className="text-xs mt-1">Login</span>
           </button>
-        )}
+        ) : null}
       </div>
     </>
   );

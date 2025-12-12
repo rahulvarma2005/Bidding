@@ -15,5 +15,6 @@ public class BidDto {
     private Long playerId; // Renamed from productId
     private Long amount;
     private String bidderUsername;
+    private String bidderTeamName;
     private LocalDateTime timestamp;
 }
