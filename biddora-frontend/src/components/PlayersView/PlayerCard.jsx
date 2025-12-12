@@ -59,14 +59,16 @@ const PlayerCard = ({ player, isAdmin, onEdit, onDelete }) => {
               </div>
               <div className="text-right">
                 <p className="text-xs text-gray-500">Price</p>
-                <p className="font-bold text-green-600">₹{player.soldPrice?.toLocaleString()}</p>
+                <p className="font-bold text-green-600">₹{player.soldPrice?.toLocaleString('en-IN')}
+                </p>
               </div>
             </div>
           ) : (
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-xs text-gray-500">Base Price</p>
-                <p className="font-bold text-gray-900">₹{player.basePrice?.toLocaleString()}</p>
+                <p className="font-bold text-gray-900">₹{player.basePrice?.toLocaleString('en-IN')}
+                </p>
               </div>
               {player.status === 'ON_AUCTION' && (
                 <button className="bg-red-500 text-white text-xs px-3 py-1 rounded-full flex items-center animate-bounce">

@@ -146,10 +146,11 @@ const BidSection = ({ productId, productStatus }) => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
+    if (amount == null) return "₹0";
+    return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
+      currency: "INR",
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 

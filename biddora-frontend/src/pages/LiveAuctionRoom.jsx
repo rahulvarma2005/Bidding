@@ -86,7 +86,7 @@ switch (data.type) {
     // ... rest of the cases (PLAYER_SOLD, PLAYER_UNSOLD) remain the same ...
     case 'PLAYER_SOLD':
     setCurrentPlayer(prev => ({ ...prev, status: 'SOLD', soldPrice: data.payload.soldPrice, soldToTeamName: data.payload.soldToTeamName }));
-    setMessage(`SOLD TO ${data.payload.soldToTeamName} for ₹${data.payload.soldPrice.toLocaleString()}`);
+    setMessage(`SOLD TO ${data.payload.soldToTeamName} for ₹${data.payload.soldPrice.toLocaleString('en-IN')}`);
     fetchMyTeam();
     break;
     
@@ -195,7 +195,7 @@ const sendBidToBackend = async (amount, enforceSlab = false) => {
 }
 
 if (myTeam.remainingPurse < amount) {
-    alert(`Insufficient Funds! You need ₹${amount.toLocaleString()} but have ₹${myTeam.remainingPurse.toLocaleString()}`);
+    alert(`Insufficient Funds! You need ₹${amount.toLocaleString('en-IN')} but have ₹${myTeam.remainingPurse.toLocaleString('en-IN')}`);
     return;
 }
 
@@ -244,7 +244,7 @@ if (isNaN(bidAmount)) {
     return;
 }
 if (bidAmount <= currentBid) {
-    alert(`Bid must be higher than current price: ₹${currentBid.toLocaleString()}`);
+    alert(`Bid must be higher than current price: ₹${currentBid.toLocaleString('en-IN')}`);
     return;
 }
 sendBidToBackend(bidAmount);
@@ -295,7 +295,7 @@ return (
             <div className="text-center md:text-left">
             <p className="text-gray-500 text-sm font-bold uppercase tracking-widest mb-1">Current Price</p>
             <p className="text-4xl md:text-5xl font-mono font-bold text-gray-800">
-                ₹{currentBid.toLocaleString()}
+                ₹{currentBid.toLocaleString('en-IN')}
             </p>
             {currentBidTeam && (
                 <p className="mt-2 text-sm text-gray-600">
@@ -355,7 +355,8 @@ return (
         <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
             <span className="text-gray-500 flex items-center"><FaMoneyBillWave className="mr-2"/> Purse</span>
-            <span className="font-mono font-bold text-green-600">₹{myTeam.remainingPurse.toLocaleString()}</span>
+            <span className="font-mono font-bold text-green-600">₹{myTeam.remainingPurse.toLocaleString('en-IN')}
+            </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
@@ -396,7 +397,8 @@ return (
                     <p className="text-xs text-gray-500">{new Date(bid.timestamp).toLocaleTimeString()}</p>
                     </div>
                 </div>
-                <span className="font-mono font-bold text-gray-700">₹{bid.amount.toLocaleString()}</span>
+                <span className="font-mono font-bold text-gray-700">₹{bid.amount.toLocaleString('en-IN')}
+                </span>
                 </div>
             ))
             )}

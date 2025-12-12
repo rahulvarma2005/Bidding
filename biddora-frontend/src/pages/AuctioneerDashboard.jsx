@@ -96,7 +96,8 @@ return (
         <div className="flex-1">
             <h3 className="text-3xl font-bold">{currentPlayer.name}</h3>
             <p className="text-gray-600 text-lg">{currentPlayer.role} | {currentPlayer.nationality}</p>
-            <p className="text-xl font-mono mt-2">Base Price: ₹{currentPlayer.basePrice.toLocaleString()}</p>
+            <p className="text-xl font-mono mt-2">Base Price: ₹{currentPlayer.basePrice.toLocaleString('en-IN')}
+            </p>
         </div>
 
         <div className="flex gap-4">
@@ -135,7 +136,8 @@ return (
             <div key={player.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors">
             <div>
                 <p className="font-semibold">{player.name}</p>
-                <p className="text-xs text-gray-500">{player.role} • ₹{player.basePrice.toLocaleString()}</p>
+                <p className="text-xs text-gray-500">{player.role} • ₹{player.basePrice.toLocaleString('en-IN')}
+                </p>
             </div>
             <button 
                 onClick={() => handleAction('start', player.id)}
