@@ -85,11 +85,7 @@ const TeamsSummary = () => {
                         </span>
                       )}
                     </h2>
-                    {team.ownerUsername && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        Owner: <span className="font-medium">{team.ownerUsername}</span>
-                      </p>
-                    )}
+                      {/* Owner name intentionally hidden for all teams */}
                   </div>
 
                   <div className="text-sm text-gray-700">

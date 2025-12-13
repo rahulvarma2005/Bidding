@@ -386,21 +386,24 @@ return (
             {bidHistory.length === 0 ? (
             <p className="text-center text-gray-400 text-sm py-10">No bids yet. Start the action!</p>
             ) : (
-            bidHistory.map((bid, index) => (
+            bidHistory.map((bid, index) => {
+                const teamName = bid.bidderTeamName || 'Unknown Team';
+                return (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg animate-fade-in-up">
-                <div className="flex items-center">
+                    <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xs mr-3">
-                    {bid.bidderUsername ? bid.bidderUsername.substring(0,2).toUpperCase() : "U"}
+                        {teamName.substring(0, 2).toUpperCase()}
                     </div>
                     <div>
-                    <p className="text-sm font-bold text-gray-800">{bid.bidderUsername}</p>
-                    <p className="text-xs text-gray-500">{new Date(bid.timestamp).toLocaleTimeString()}</p>
+                        <p className="text-sm font-bold text-gray-800">{teamName}</p>
+                        <p className="text-xs text-gray-500">{new Date(bid.timestamp).toLocaleTimeString()}</p>
                     </div>
+                    </div>
+                    <span className="font-mono font-bold text-gray-700">₹{bid.amount.toLocaleString('en-IN')}
+                    </span>
                 </div>
-                <span className="font-mono font-bold text-gray-700">₹{bid.amount.toLocaleString('en-IN')}
-                </span>
-                </div>
-            ))
+                );
+            })
             )}
         </div>
     </div>
