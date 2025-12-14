@@ -3,6 +3,7 @@ package com.example.biddora_backend.auth.filter;
 import com.example.biddora_backend.auth.service.impl.JWTService;
 import com.example.biddora_backend.auth.model.UserInfoDetails;
 import com.example.biddora_backend.auth.service.impl.UserInfoService;
+import com.example.biddora_backend.common.exception.UserNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,14 +41,19 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserInfoDetails userDetails = (UserInfoDetails) userInfoService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                UserInfoDetails userDetails = (UserInfoDetails) userInfoService.loadUserByUsername(username);
+                if (jwtService.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (UserNotFoundException ex) {
+                // If the user referenced in the token no longer exists,
+                // treat the token as invalid and continue without authentication.
             }
         }
         filterChain.doFilter(request, response);
