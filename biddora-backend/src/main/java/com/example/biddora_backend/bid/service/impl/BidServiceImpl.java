@@ -65,15 +65,15 @@ public class BidServiceImpl implements BidService {
 
         // 2. Validate Bid Amount vs Current Highest and prevent consecutive bids from same team
         Optional<Bid> highestBidOpt = bidRepo.findTopByPlayerOrderByAmountDesc(player);
-        Long currentHighest = highestBidOpt.map(Bid::getAmount).orElse(player.getBasePrice());
-
         Bid highestBid = highestBidOpt.orElse(null);
 
+        Long currentHighest = highestBidOpt.map(Bid::getAmount).orElse(player.getBasePrice());
         Long newAmount = createBidDto.getAmount();
         boolean enforceSlab = Boolean.TRUE.equals(createBidDto.getEnforceSlab());
 
         if (highestBid == null) {
-            // Case 1: No bids yet. The first bid must be at least the base price.
+            // Case 1: No bids yet. The first bid must be at least the base price
+            // and may be exactly equal to it.
             if (newAmount < player.getBasePrice()) {
                 throw new BidException("Bid cannot be lower than the base price: " + player.getBasePrice());
             }
@@ -82,11 +82,23 @@ public class BidServiceImpl implements BidService {
             if (highestBid.getUser() != null && highestBid.getUser().getId().equals(user.getId())) {
                 throw new BidAccessDeniedException("You cannot place two consecutive bids for the same team.");
             }
-        }
 
-        // New bid must always be strictly higher than currentHighest
-        if (newAmount <= currentHighest) {
-            throw new BidException("Bid must be higher than the current highest bid: " + currentHighest);
+            // Special case: allow a base-price bid even if an existing
+            // highest bid is also at base price. This supports the "first
+            // Raise Bid equals base price" UX without failing validation.
+            boolean isBasePriceRound =
+                    highestBid.getAmount() != null
+                            && highestBid.getAmount().equals(player.getBasePrice())
+                            && newAmount.equals(player.getBasePrice());
+
+            if (!isBasePriceRound) {
+                // When there is already a highest bid (and we're not in the
+                // special base-price case), the new bid must always be
+                // strictly higher than the current highest.
+                if (newAmount <= currentHighest) {
+                    throw new BidException("Bid must be higher than the current highest bid: " + currentHighest);
+                }
+            }
         }
 
         // 2a. RULE: Enforce slab-based incremental bids ONLY when requested (e.g., quick bid button)

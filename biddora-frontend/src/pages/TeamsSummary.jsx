@@ -59,9 +59,15 @@ const TeamsSummary = () => {
 
         <div className="space-y-6">
           {teams.map((team) => {
-            const soldPlayers = (team.squad || []).filter(
-              (p) => p.status === 'SOLD'
-            );
+            const squad = team.squad || [];
+            const soldPlayers = squad.filter((p) => p.status === 'SOLD');
+            const totalPlayers = squad.length;
+            const totalOverseasPlayers = squad.filter(
+              (p) => p.nationality === 'OVERSEAS'
+            ).length;
+
+            const maxSquadSize = team.maxSquadSize ?? 25;
+            const maxOverseasPlayers = team.maxOverseasPlayers ?? 8;
 
             return (
               <div
@@ -88,17 +94,29 @@ const TeamsSummary = () => {
                       {/* Owner name intentionally hidden for all teams */}
                   </div>
 
-                  <div className="text-sm text-gray-700">
+                  <div className="text-sm text-gray-700 space-y-1 text-right">
                     <p>
-                      Total Purse:{' '}
+                      Total Purse{' '}
                       <span className="font-semibold">
                         ₹{team.totalPurse?.toLocaleString('en-IN')}
                       </span>
                     </p>
                     <p>
-                      Remaining:{' '}
+                      Remaining{' '}
                       <span className="font-semibold text-green-700">
                         ₹{team.remainingPurse?.toLocaleString('en-IN')}
+                      </span>
+                    </p>
+                    <p>
+                      Total Players{' '}
+                      <span className="font-semibold">
+                        {totalPlayers}/{maxSquadSize}
+                      </span>
+                    </p>
+                    <p>
+                      Overseas Players{' '}
+                      <span className="font-semibold">
+                        {totalOverseasPlayers}/{maxOverseasPlayers}
                       </span>
                     </p>
                   </div>

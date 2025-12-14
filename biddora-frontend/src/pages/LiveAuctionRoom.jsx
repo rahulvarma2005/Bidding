@@ -229,6 +229,14 @@ try {
 const handleQuickBid = () => {
     if (!currentPlayer) return;
 
+    // If there are no bids yet, first quick bid should be
+    // exactly at the base price (no slab enforcement).
+    if (bidHistory.length === 0) {
+        sendBidToBackend(currentPlayer.basePrice, false);
+        return;
+    }
+
+    // Once at least one bid exists, apply normal slab-based increments
     const increment = getIncrementForAmount(currentBid);
     const nextBidAmount = currentBid + increment;
 
