@@ -22,7 +22,7 @@ const Header = ({ userId, username, role, onLogout }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const navigate = useNavigate();
 
-  const handleLoginClick = () => navigate("/login");
+  // const handleLoginClick = () => navigate("/login");
   const handlePlayersClick = () => navigate("/players");
   const handleLiveAuctionClick = () => navigate("/live-auction"); // New handler
   const handleUsersClick = () => navigate("/user-view");
@@ -233,14 +233,15 @@ const Header = ({ userId, username, role, onLogout }) => {
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-end space-x-4">
-            {/*<button
-              onClick={handleLoginClick}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-            >
-              Login
-            </button>*/}
-          </div>
+          // <div className="flex items-center justify-end space-x-4">
+          //   <button
+          //     onClick={handleLoginClick}
+          //     className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+          //   >
+          //     Login
+          //   </button>
+          // </div>
+          null
         )}
       </div>
 
@@ -273,13 +274,14 @@ const Header = ({ userId, username, role, onLogout }) => {
             <span className="text-xs mt-1">Profile</span>
           </button>
         ) : !username ? (
-          {/*<button
-            onClick={handleLoginClick}
-            className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
-          >
-            <FaUser className="w-5 h-5" />
-            <span className="text-xs mt-1">Login</span>
-          </button>*/}
+          // <button
+          //   onClick={handleLoginClick}
+          //   className="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors"
+          // >
+          //   <FaUser className="w-5 h-5" />
+          //   <span className="text-xs mt-1">Login</span>
+          // </button>
+          null
         ) : null}
       </div>
     </>
